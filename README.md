@@ -1,21 +1,18 @@
-# API Documentation and Setup Guide
+## Tajify API Documentation
 
 API BASE URL:
 [Tajify API](https://api-tajify-production.up.railway.app)
 
 
-## Test Login Details
+### Test Login Details
 
-#### identifier:
-08157113270 or user@example.com
-
-#### password:
-test1234
+-   **identifier** `08157113270 or user@example.com`
+-   **password** `test1234`  
 
 
-## API Routes
+### API Routes
 
-### Authentication Routes
+#### Authentication Routes
 
 -   **POST** `/api/auth/login`  
     Authenticates a user and returns a token.
@@ -38,6 +35,8 @@ or
 -   **Response:**
 
     -   **200 OK:** Login successful
+    -   **400 Bad Request:** Account does not or no longer exist
+    -   **400 Bad Request:** User details incorrect
 
 -   **Example Response:**
 ```json
@@ -65,7 +64,8 @@ or
             "otpIssuedAt": "2024-12-21T21:13:31.181Z",
             "passwordChangedAt": "2024-12-21T21:13:47.438Z"
         }
-	}
+	},
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3NjcyY2ZlNDZjZWJlNDgzMTVhOTEwNCIsImlhdCI6MTczNDgxOTMwNSwiZXhwIjoxNzM3NDExMzA1fQ.ZNf2pnpBDqdKFKisysPGl5U8mfzf_jvU80pBz8PkWcA"
 }
 ```
 

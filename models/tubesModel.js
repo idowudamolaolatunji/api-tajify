@@ -28,10 +28,7 @@ const tubesSchema = new mongoose.Schema({
         required: true,
     },
     hashTags: [String],
-    videoFIleUrl: {
-        type: String,
-        required: true
-    },
+    videoFIleUrl: String,
     thumbnailUrl: String,
     slug: String,
 }, {

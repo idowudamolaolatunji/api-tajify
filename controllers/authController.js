@@ -74,7 +74,7 @@ exports.loginUser = asyncWrapper(async function (req, res) {
         
     // COMPARE THE USER PASSWORD AND CHECK IF THE EAMIL IS CORRECT
     const comparedPassword = await user.comparePassword(password, user.password)
-    if((identifierType == "email" ? !user.email : !user.phoneNumber) || !comparedPassword) {
+    if(!(identifierType == "email" ? user.email : user.phoneNumber) || !comparedPassword) {
         return res.json({ message: 'User details incorrect!'})
     };
 

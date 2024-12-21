@@ -4,6 +4,12 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 //////////////////////////////////////////////
+const userRouter = require("./routes/userRoute")
+const authRouter = require("./routes/authRoute")
+const walletRouter = require("./routes/walletRoute")
+const tubeRouter = require("./routes/tubeRoute")
+
+
 const app = express();
 
 
@@ -43,8 +49,10 @@ app.use(function (_, _, next) {
 //////////////////////////////////////////////
 //// MOUNTING ROUTES ////
 //////////////////////////////////////////////
-// app.use('/api/users', userRouter);
-
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
+app.use('/api/wallets', walletRouter);
+app.use('/api/tubes', tubeRouter);
 
 
 module.exports = app;

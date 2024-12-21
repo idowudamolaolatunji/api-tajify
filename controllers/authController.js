@@ -1,6 +1,7 @@
 const crypto = require("crypto")
-const otpEmail = require('../emails/templates/otpEmail');
-const User = require('../models/userModel');
+const otpEmail = require('../emails/otpEmail');
+const passwordResetEmail = require('../emails/passwordResetEmail');
+const User = require('../models/usersModel');
 const { asyncWrapper } = require('../utils/handlers');
 const { generateOtp, signToken } = require('../utils/helpers');
 const sendEmail = require('../utils/sendEmail');
@@ -8,11 +9,15 @@ const sendEmail = require('../utils/sendEmail');
 
 
 exports.signupUser = asyncWrapper(async function(req, res) {
-    const { firstname, lastname, email, password, passwordConfirm } = req.body;
+    const { firstname, lastname, username, email, password, passwordConfirm, phoneNumber } = req.body;
 
     // CHECK IF THE EMAIL ALREADY EXISTS
     const emailExist = await User.findOne({ email });
+    const usernameExist = await User.findOne({ username });
+    const phoneNumberExist = await User.findOne({ phoneNumber });
     if(emailExist) return res.json({ message: 'Email already exist!!' });
+    if(usernameExist) return res.json({ message: 'Username already exist!!' });
+    if(phoneNumberExist) return res.json({ message: 'Phone Number already exist!!' });
 
     // GENERATE OTP AND EMAIL MESSAGE
     const otp = generateOtp();
@@ -22,6 +27,8 @@ exports.signupUser = asyncWrapper(async function(req, res) {
     const newUser = await User.create({
         firstname,
         lastname, 
+        username,
+        phoneNumber,
         email: email.trim(),
         password, 
         passwordConfirm,
@@ -32,9 +39,12 @@ exports.signupUser = asyncWrapper(async function(req, res) {
     res.status(201).json({
         status: 'success',
         message: 'Account created successfully!',
-        data: { user: { 
-            name: newUser.firstname, email: newUser.email, expiresIn: newUser.otpExpiresIn
-        }}
+        data: { 
+            user: { 
+                name: newUser.firstname,
+                email: newUser.email,
+            }
+        }
     });
 
     // SEND OTP EMAIL
@@ -47,17 +57,26 @@ exports.signupUser = asyncWrapper(async function(req, res) {
 
 
 exports.loginUser = asyncWrapper(async function (req, res) {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
+    const trimmedIdentifier = identifier.trim();
 
     // FIND THE USER AND DO SOME CHECKINGS 
-    const user = await User.findOne({ email: email.trim() }).select('+password');
+    const user = await User.findOne({ $or: [
+        { email: trimmedIdentifier },
+        { phoneNumber: trimmedIdentifier }
+    ]}).select('+password');
+
+
     if(!user) return res.json({ message: 'Account does not or no longer exist!' });
     if(!user.isActive) return res.json({ message: 'Account is inactive or disabled.' });
     if (!user.isOtpVerified) return res.json({ message: 'Account not verified.' });
+    const identifierType = trimmedIdentifier.includes("@") ? 'email' : 'phone';
         
     // COMPARE THE USER PASSWORD AND CHECK IF THE EAMIL IS CORRECT
     const comparedPassword = await user.comparePassword(password, user.password)
-    if(!user.email || !comparedPassword) return res.json({ message: 'Email or password incorrect!'});
+    if((identifierType == "email" ? !user.email : !user.phoneNumber) || !comparedPassword) {
+        return res.json({ message: 'User details incorrect!'})
+    };
 
     // SIGNING ACCESS TOKEN
     const token = signToken(user._id);
@@ -82,7 +101,7 @@ exports.verifyOtp = asyncWrapper(async function(req, res) {
     const { isOTPExpired } = user?.isOTPExpired();
     if(user.isOtpVerified) return res.json({ message: 'Account alreadty verified!' });
     if(isOTPExpired) return res.json({ message: 'OTP Expired, Request new OTP!'});
-    if(+otp !== user.otpCode) return res.json({ message: 'Invalid OTP code!' });
+    if(+otp != user.otpCode) return res.json({ message: 'Invalid OTP code!' });
 
     // UPDATE USER OTP
     user.isOtpVerified = true;
@@ -92,7 +111,7 @@ exports.verifyOtp = asyncWrapper(async function(req, res) {
     // SEND BACK RESPONSE
     res.status(200).json({
         status: 'success',
-        message: 'OTP verified!',
+        message: 'OTP verified successfully!',
         data: { user }
     });
 });
@@ -114,6 +133,7 @@ exports.requestOtp = asyncWrapper(async function(req, res) {
 
     // GENERATE NEW OTP CODE
     const otp = generateOtp();
+    console.log(otp)
     const emailOtpResendMessage = otpEmail(otp, user.firstname);
     user.otpIssuedAt = Date.now();
     user.otpCode = otp;
@@ -205,20 +225,6 @@ exports.forgotPassword = asyncWrapper(async function (req, res) {
         status: "success",
         message: "Reset password request sent!",
         data: { user }
-    });
-});
-
-
-exports.verifyResetToken = asyncWrapper(async function(req, res) {
-    const { token } = req.params;
-
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-    const user = await User.findOne({ passwordResetToken: hashedToken });
-
-    if (!user) return res.status(404).json({ message: "Token is invalid" });
-    res.status(200).json({
-        status: "success",
-        message: "Success"
     });
 });
 

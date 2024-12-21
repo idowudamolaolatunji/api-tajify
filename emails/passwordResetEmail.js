@@ -1,3 +1,3 @@
 module.exports = function (resetToken) {
-    return ``;
+    return `Click the reset link: ${resetToken}`;
 };

@@ -1,122 +1,248 @@
 # API Documentation and Setup Guide
+
 API BASE URL:
 [Tajify API](https://api-tajify-production.up.railway.app)
 
+
 ## Test Login Details
 
-#### email address:
-test@mail.com
+#### identifier:
+08157113270 or user@example.com
 
 #### password:
 test1234
+
 
 ## API Routes
 
 ### Authentication Routes
 
-- **POST** `/api/forgot-password`  
-  Sends a password reset link to the user's registered email with a token embedded in the mail.
+-   **POST** `/api/auth/login`  
+    Authenticates a user and returns a token.
+-   **Request Body:**
 
-- **POST** `/api/reset-password`
-  Resets the user's password using a provided token in the forgot-password mail.
+```json
+{
+	"identifier": "08157113270",
+	"password": "test1234"
+}
+```
+or
+```json
+{
+	"identifier": "user@example.com",
+	"password": "test1234"
+}
+```
 
-- **POST** `/api/login`  
-  Authenticates a user and returns an access token.
+-   **Response:**
 
-- **POST** `/api/logout`  
-  Logs out an authenticated user, invalidating the current session and deleting that accessToken.
+    -   **200 OK:** Login successful
 
-- **POST** `/api/register`  
-  Registers a new user account. and then an OTP is sent when the user requests for an OTP
+-   **Example Response:**
+```json
+{
+	"status": "success",
+	"message": "Login successful",
+	"data": {
+		"user": {
+            "_id": "67672cfe46cebe48315a9104",
+            "firstname": "taiwo",
+            "lastname": "bankole",
+            "username": "taiwo_banks001",
+            "phoneNumber": "08157113270",
+            "email": "user@example.com",
+            "image": "",
+            "role": "user",
+            "isActive": true,
+            "isOtpVerified": true,
+            "createdAt": "2024-12-21T21:02:54.790Z",
+            "updatedAt": "2024-12-21T21:13:47.538Z",
+            "slug": "taiwo-bankole-6767",
+            "fullname": "taiwo bankole",
+            "otpExpiresIn": "2024-12-21T21:15:31.190Z",
+            "__v": 0,
+            "otpIssuedAt": "2024-12-21T21:13:31.181Z",
+            "passwordChangedAt": "2024-12-21T21:13:47.438Z"
+        }
+	}
+}
+```
 
-- **GET | HEAD** `/api/user`  
-  Retrieves the currently authenticated user's information.
 
-<!-- 
-### Email Verification Routes for instant verification once a new user registers ( OTP Email Verification)
+-   **POST** `/api/auth/signup`  
+    Registers a new user account. and then an OTP is sent when the user requests for an OTP
+-   **Request Body:**
 
-#### 1. Send OTP after registration
+```json
+{
+	"firstname": "taiwo",
+	"lastname": "bankole",
+	"username": "taiwo_banks001",
+	"email": "user@example.com",
+	"phoneNumber": "08157113270",
+	"password": "test1234",
+	"passwordConfirm": "test1234"
+}
+```
 
-- **Endpoint:** `POST /api/send-otp`
-- **Description:** Sends an OTP to the user’s email after registration.
-- **Request Body:**
-  ```json
+-   **Response:**
+    -   **201 OK:** Account created successful
+    -   **400 Bad Request:** No user with this email
+
+-   **Example Response:**
+```json
+{
+	"status": "success",
+	"message": "Account created successful",
+	"data": {
+        "user": {
+            "name": "taiwo",
+            "email": "user@example.com",
+        }
+    }
+}
+```
+
+
+-   **PATCH** `/api/auth/request-otp`
+    Resends an OTP to the user’s email.
+
+-   **Request Body:**
+```json
+{
+	"email": "user@example.com"
+}
+```
+
+-   **Response:**
+    -   **200 OK:** OTP verification code resent
+    -   **400 Bad Request:** Account alreadty verified!
+
+-   **Example Response:**
+```json
   {
-    "email": "user@example.com"
+    "status": "success",
+    "message": "OTP verification code resent",
+    "data": {
+        "user": {
+            "name": "taiwo",
+            "email": "user@example.com",
+        }
+    }
   }
-  ```
-- **Response:**
+```
 
-  - **200 OK:** OTP sent successfully
-  - **404 Not Found:** Email not found in the database
 
-- **Example Response:**
-  ```json
+-   **PATCH** `/api/auth/verify-otp`  
+    Verifies the OTP entered by the user and marks their email as verified if successful.
+
+-   **Request Body:**
+```json
+{
+	"email": "user@example.com",
+	"otp": 2280
+}
+```
+
+-   **Response:**
+    -   **200 OK:** OTP verified successfully
+    -   **400 Bad Request:** Account alreadty verified!
+    -   **400 Bad Request:** OTP Expired, Request new OTP!
+    -   **400 Bad Request:** Invalid OTP code!
+
+-   **Example Response:**
+```json
   {
-    "message": "OTP sent successfully"
+    "status": "success",
+    "message": "OTP verified successfully",
+    "data": {
+        "user": {
+            "_id": "67672cfe46cebe48315a9104",
+            "firstname": "taiwo",
+            "lastname": "bankole",
+            "username": "taiwo_banks001",
+            "phoneNumber": "08157113270",
+            "email": "user@example.com",
+            "image": "",
+            "role": "user",
+            "isActive": true,
+            "isOtpVerified": true,
+            "createdAt": "2024-12-21T21:02:54.790Z",
+            "updatedAt": "2024-12-21T21:13:47.538Z",
+            "slug": "taiwo-bankole-6767",
+            "fullname": "taiwo bankole",
+            "otpExpiresIn": "2024-12-21T21:15:31.190Z",
+            "__v": 0,
+            "otpIssuedAt": "2024-12-21T21:13:31.181Z",
+            "passwordChangedAt": "2024-12-21T21:13:47.438Z"
+        }
+    }
   }
-  ```
+```
 
-#### 2. Verify OTP
 
-- **Endpoint:** `POST /api/verify-otp`
-- **Description:** Verifies the OTP entered by the user and marks their email as verified if successful.
-- **Request Body:**
+-   **PATCH** `/api/auth/forgot-password/`  
+    Sends a password reset link to the user's registered email with a token embedded in the mail.
 
-  ```json
-  {
-    "email": "user@example.com",
-    "otp": "123456"
-  }
-  ```
+-   **Request Body:**
+```json
+{
+	"email": "user@example.com"
+}
+```
 
-- **Response:**
 
-  - **200 OK:** Email verified successfully
-  - **400 Bad Request:** Invalid or expired OTP
+-   **PATCH** `/api/auth/reset-password/:token`
+    Resets the user's password using a provided token in the forgot-password mail.
 
-- **Example Response:**
+-   **Request Body:**
+```json
+{
+	"password": "123456789",
+	"passwordConfirm": "123456789"
+}
+```
 
-  ```json
-  {
-    "message": "Email verified successfully"
-  }
-  ```
 
----
+-   **GET** `/api/auth/logout`  
+    Logs out an authenticated user.
+
+
+<!--
 
 ### Categories Routes (Categories Management)
 
-- **GET** `api/v1/categories`  
+- **GET** `api/v1/categories`
   Lists all categories with a count of associated events (paginated).
 
-- **POST** `api/v1/categories`  
+- **POST** `api/v1/categories`
   Creates a new category.
 
-- **POST** `api/v1/categories/{categoryId}`  
+- **POST** `api/v1/categories/{categoryId}`
   Updates an existing category.
 
-- **PATCH** `api/v1/categories/{categoryId}/toggle-status`  
+- **PATCH** `api/v1/categories/{categoryId}/toggle-status`
   Toggles the status (enabled/disabled) of a category.
 
-- **DELETE** `api/v1/categories/{categoryId}`  
+- **DELETE** `api/v1/categories/{categoryId}`
   Deletes a category.
 
 ### Events Routes (Events Management)
 
-- **GET** `api/v1/events`  
+- **GET** `api/v1/events`
   Lists all events with optional search and filtering.
 
-- **POST** `api/v1/events`  
+- **POST** `api/v1/events`
    Creates a new event.
 
-  - **POST** `api/v1/events/overview`  
+  - **POST** `api/v1/events/overview`
     Validates event overview details. (When a user clicks on save and continue but it doesn't submit the form)
 
-  - **POST** `api/v1/events/gallery`  
+  - **POST** `api/v1/events/gallery`
     Validates gallery images for an event. (When a user clicks on save and continue but it doesn't submit the form)
 
-  - **POST** `api/v1/events/tickets`  
+  - **POST** `api/v1/events/tickets`
      Validates tickets associated with an event. (When a user clicks on save and continue but it doesn't submit the form)
 
     **Example Request**:
@@ -167,22 +293,22 @@ test1234
     }
     ```
 
-- **PUT** `api/v1/events/{eventId}/update-details`  
+- **PUT** `api/v1/events/{eventId}/update-details`
   Updates event overview details of a particular event.
 
-- **POST** `api/v1/events/{eventId}/update-gallery`  
+- **POST** `api/v1/events/{eventId}/update-gallery`
   Updates event gallery images of a particular event.
 
-- **PUT** `api/v1/events/{eventId}/update-tickets`  
+- **PUT** `api/v1/events/{eventId}/update-tickets`
   Updates tickets associated with an event.
 
-- **GET** `api/v1/events/{eventId}/tickets`  
+- **GET** `api/v1/events/{eventId}/tickets`
   Retrieves all tickets associated with a specific event.
 
-- **DELETE** `api/v1/events/{eventId}/tickets/{ticketId}`  
+- **DELETE** `api/v1/events/{eventId}/tickets/{ticketId}`
   Deletes a specific ticket from an event.
 
-- **DELETE** `api/v1/events/{eventId}`  
+- **DELETE** `api/v1/events/{eventId}`
   Deletes an event and all resources attributed to it.
 
 ---
@@ -191,16 +317,16 @@ test1234
 
 ### Testing with Postman
 
-1. **Import API Documentation**  
+1. **Import API Documentation**
    Use this README or individual API routes in Postman to organize and test each endpoint.
 
-2. **Environment Setup**  
+2. **Environment Setup**
    Use Postman environment variables for `base_url`, `access_token`, etc., to simplify testing.
 
-3. **Testing Image Uploads**  
+3. **Testing Image Uploads**
    For image fields (e.g., `cover_photo`, `event_image`), set `form-data` in Postman with the `file` data type for uploads.
 
-4. **Pagination**  
+4. **Pagination**
    Append `page` query parameters as needed:
 
    ```http
@@ -262,18 +388,18 @@ test1234
 
 ### Notifications Route
 
-- **POST** `api/v1/notification-mail`  
+- **POST** `api/v1/notification-mail`
   Sends an email notification to specified users.
 
 ### Users/Organizers Management Routes
 
-- **PUT** `api/v1/user/{id}/toggle-feature`  
+- **PUT** `api/v1/user/{id}/toggle-feature`
   Toggles the featured for a user by their ID.
 
-  **PUT | PATCH** `api/v1/user/{id}`  
+  **PUT | PATCH** `api/v1/user/{id}`
   The admin is able to edit users/organizers details by their ID.
 
-- **GET | HEAD** `api/v1/users`  
+- **GET | HEAD** `api/v1/users`
   Retrieves a list of all users.
 
 - **POST** `api/v1/users`
@@ -281,7 +407,7 @@ test1234
   Users can be filtered by the following `active, kyc_verified, phone_verified, email_unverified, banned `.
   example : `/api/v1/users?filter=phone_verified`
 
-- **GET | HEAD** `api/v1/users/{user}`  
+- **GET | HEAD** `api/v1/users/{user}`
   Retrieves details for a specific user by their ID. and shows all relationships associated with the user
 
 ### Payment Integration/ticket checkout action
@@ -365,7 +491,7 @@ Receives the payment status from Paystack and updates the order’s payment and 
 - **GET | HEAD** `api/v1/orders`
   Retrieves a list of all orders.
 
-- **GET | HEAD** `api/v1/orders/{order}`  
+- **GET | HEAD** `api/v1/orders/{order}`
   Retrieves details for a specific order by their ID.
 
 ---

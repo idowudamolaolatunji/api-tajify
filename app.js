@@ -37,6 +37,11 @@ app.use(cors({
 // ALLOWING STATIC FILES
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', function(_, res) {
+    const filePath = './public/doc.html';
+    res.sendFile(filePath, { root: __dirname });
+});
+
 
 // REQUEST GLOBAL MIDDLEWARE
 app.use(function (_, _, next) {

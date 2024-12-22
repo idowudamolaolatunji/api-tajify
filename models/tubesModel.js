@@ -28,9 +28,10 @@ const tubesSchema = new mongoose.Schema({
         required: true,
     },
     hashTags: [String],
-    videoFIleUrl: String,
-    thumbnailUrl: String,
+    videoFIleUrl: { type: String, default: "" },
+    thumbnailUrl: { type: String, default: "" },
     slug: String,
+    lastModified: { type: Date, default: null },
 }, {
     timestamps: true,
 });
@@ -41,6 +42,17 @@ tubesSchema.pre("save", function(next) {
     if(this.isNew || this.isModified("title")) {
         const slug = slugify(this.title, { lower: true, replacement: "-" });
         this.slug = slug;
+    }
+
+    next();
+});
+
+
+tubesSchema.pre("save", function(next) {
+    if(this.createdAt == this.updatedAt) {
+        this.lastModified = null;
+    } else {
+        this.lastModified = this.updatedAt
     }
 
     next();

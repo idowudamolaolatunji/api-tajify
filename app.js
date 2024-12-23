@@ -4,10 +4,12 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 //////////////////////////////////////////////
-const userRouter = require("./routes/userRoute")
 const authRouter = require("./routes/authRoute")
 const walletRouter = require("./routes/walletRoute")
-const tubeRouter = require("./routes/tubeRoute")
+const profileRouter = require("./routes/profileRoute")
+const channelsRouter = require("./routes/channelsRoute")
+const rewardRouter = require("./routes/rewardRoute")
+const connectsRouter = require("./routes/connectRoute")
 
 
 const app = express();
@@ -55,9 +57,11 @@ app.use(function (_, _, next) {
 //// MOUNTING ROUTES ////
 //////////////////////////////////////////////
 app.use('/api/auth', authRouter);
-app.use('/api/users', userRouter);
 app.use('/api/wallets', walletRouter);
-app.use('/api/tubes', tubeRouter);
+app.use('/api/channels', channelsRouter);
+app.use('/api/profiles', profileRouter);
+app.use('/api/connects', connectsRouter);
+app.use('/api/rewards', rewardRouter);
 
 
 module.exports = app;

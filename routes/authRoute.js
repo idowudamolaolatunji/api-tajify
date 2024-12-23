@@ -22,4 +22,20 @@ router.patch('/request-otp', authController.requestOtp);
 router.patch('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:token', authController.resetPassord);
 
+
+
+// ROUTE FOR PROTECTED USER
+router.get('/users/me', isAuthProtected, userController.getMe);
+// router.patch('/upload-image', uploadSingleImage, resizeSingleUserImage, isAuthProtected, userController.uploadProfileImage);
+router.patch('/users/delete-account', isAuthProtected, userController.deleteAccount);
+router.patch('/users/update-password', isAuthProtected, authController.updatePassword);
+
+
+// ROUTES RESTRICTED TO JUST ADMINS
+router.get('/users/', isAuthProtected, isRestricted, userController.getEveryUsers);
+router.get('/users/:id', isAuthProtected, isRestricted, userController.getUserById);
+router.patch('/users/:id', isAuthProtected, isRestricted, userController.updateUser);
+router.delete('/users/:id', isAuthProtected, isRestricted, userController.deleteUser);
+
+
 module.exports = router;

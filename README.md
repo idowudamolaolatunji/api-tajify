@@ -227,13 +227,13 @@ or
 -   **GET** `/api/auth/logout`  
     Logs out an authenticated user.
 
--   **GET** `/api/users/me`  
+-   **GET** `/api/auth/users/me`  
     Retrieves the currently authenticated user's information.
 
--   **DELETE** `/api/users/delete-account`  
+-   **DELETE** `/api/auth/users/delete-account`  
     Delete the currently authenticated user.
 
--   **PATHC** `/api/users/update-password`  
+-   **PATHC** `/api/auth/users/update-password`  
     Change password for the currently authenticated user.
 -   **Request Body:**
 
@@ -247,10 +247,10 @@ or
 
 ### Creator Profile:
 
--   **POST** `/api/user/become-a-creator`
+-   **POST** `/api/profile/become-a-creator`
     Creates a creator profile for the athenticated user and make them a creator therefore they can now upload content. (Protected) - No request body needed
 
--   **GET** `/api/users/profile`  
+-   **GET** `/api/profile/profile`  
     Retrieves the currently authenticated user's profile information.
 
 ### Wallet:
@@ -263,13 +263,13 @@ or
 
 ### Tube:
 
--   **GET** `/api/tubes?type=tube-short&limit=10&page=1`
+-   **GET** `/api/channels/tubes?type=tube-short&limit=10&page=1`
     Lists all tubes randomly based on an algroithm (paginated).
 
--   **GET** `/api/tubes/{id}`
+-   **GET** `/api/channels/tubes/{id}`
     Get a single tube by id
 
--   **POST** `/api/tubes/create`
+-   **POST** `/api/channels/tubes/create`
     Creates a new tube. (protected)
 -   **Request Body:**
 
@@ -315,14 +315,14 @@ or
 }
 ```
 
--   **POST** `/api/tubes/upload-video/{id}`
+-   **POST** `/api/channels/tubes/upload-video/{id}`
     Upload the tube video and thumbnail. I assume you know how to use formData...make sure to use formData (protected)
 
--   **GET** `/api/tubes/my-tube`
+-   **GET** `/api/channels/tubes/my-tube`
     Get tubes related to the logged in creator. (protected)
 
--   **PATCH** `/api/tubes/{id}`
+-   **PATCH** `/api/channels/tubes/{id}`
     Updates an existing tube by Id. (protected)
 
--   **DELETE** `/api/tubes/{id}`
+-   **DELETE** `/api/channels/tubes/{id}`
     Deletes a tube by Id. (protected)

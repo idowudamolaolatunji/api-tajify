@@ -4,10 +4,12 @@ const { asyncWrapper } = require('../utils/handlers');
 // const { filterObj } = require("../utils/helpers");
 
 
-exports.getEveryUsers = refactory.getAll(User, 'users');
-exports.getUserById = refactory.getOne(User, 'user');
-exports.updateUser = refactory.updateOne(User, 'user');
-exports.deleteUser = refactory.deleteOne(User, 'user');
+const refactoryParameter = [User, 'user'];
+
+exports.getEveryUsers = refactory.getAll(...refactoryParameter);
+exports.getUserById = refactory.getOne(...refactoryParameter);
+exports.updateUser = refactory.updateOne(...refactoryParameter);
+exports.deleteUser = refactory.deleteOne(...refactoryParameter);
 
 
 exports.getMe = asyncWrapper(async function(req, res) {
@@ -66,7 +68,7 @@ exports.deleteAccount = asyncWrapper(async function(req, res) {
 })
   
 // // USER UPDATES PROFILE (AUTHORISED)
-// exports.updateMe = asyncWrapper(async function (req, res) {
+// exports.updateAc = asyncWrapper(async function (req, res) {
 //     const { password, passwordConfirm} = req.body;
 
 //     // CHECK IF USER ISN'T TRYINGG TO UPDATE PASSWORD ON THIS ROUTE

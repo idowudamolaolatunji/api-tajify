@@ -5,7 +5,7 @@ const multer = require('multer');
 //////////////////////////////////////////////////
 //// MULTER STORAGE ////
 //////////////////////////////////////////////////
-const multerStorage = multer.memoryStorage();
+const multerStorage = multer.diskStorage({});
 
 
 //////////////////////////////////////////////////
@@ -31,7 +31,6 @@ const multerFilter = (req, file, cb) => {
 const upload = multer({
     storage: multerStorage,
     fileFilter: multerFilter,
-    limits: { fieldSize: 1024 * 1024 * 200 }
 });
 
 

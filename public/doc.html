@@ -393,7 +393,9 @@
 		<pre><code class="lang-json">{
     <span class="hljs-attr">"title"</span>: <span class="hljs-string">"A good way to make money"</span>,
     <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?"</span>,
-    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"tube-short"</span>
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"tube-short"</span>,
+    <span class="hljs-attr">"videoUrl"</span>: {<span class="hljs-attr">"File Object"</span>},
+    <span class="hljs-attr">"thumbnailUrl"</span>: {<span class="hljs-attr">"File Object"</span>},
 }
 </code></pre>
 		<ul>
@@ -401,7 +403,7 @@
 				<strong>Important Note:</strong>
 				<ol>
 					<li>Description can be in any format including HTML or just ordinary text</li>
-					<li>You need to upload the tube video content seperately from the tube creation, so after create</li>
+					<li>Upload Everything together, Including the media (thumbnail and video) as well as the content details, But it as to be a formdata</li>
 				</ol>
 			</li>
 			<li><strong>Request Body:</strong></li>
@@ -414,8 +416,8 @@
             <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,
             <span class="hljs-attr">"title"</span>: <span class="hljs-string">"A good way to make money"</span>,
             <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?"</span>,
-            <span class="hljs-attr">"videoFIleUrl"</span>: <span class="hljs-string">""</span>,
-            <span class="hljs-attr">"thumbnailUrl"</span>: <span class="hljs-string">""</span>,
+            <span class="hljs-attr">"videoUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4"</span>,
+            <span class="hljs-attr">"thumbnailUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg"</span>,
             <span class="hljs-attr">"views"</span>: <span class="hljs-number">0</span>,
             <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
             <span class="hljs-attr">"shares"</span>: <span class="hljs-number">0</span>,
@@ -434,9 +436,6 @@
 }
 </code></pre>
 		<ul>
-			<li>
-				<p><strong>POST</strong> <code>/api/channels/tubes/upload-video/{id}</code> Upload the tube video and thumbnail. I assume you know how to use formData...make sure to use formData (protected)</p>
-			</li>
 			<li>
 				<p><strong>GET</strong> <code>/api/channels/tubes/my-tube</code> Get tubes related to the logged in creator. (protected)</p>
 			</li>

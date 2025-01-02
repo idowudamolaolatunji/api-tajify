@@ -277,13 +277,15 @@ or
 {
 	"title": "A good way to make money",
 	"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?",
-	"type": "tube-short"
+	"type": "tube-short",
+	"videoUrl": {"File Object"},
+	"thumbnailUrl": {"File Object"},
 }
 ```
 
 -   **Important Note:**
     1. Description can be in any format including HTML or just ordinary text
-    2. You need to upload the tube video content seperately from the tube creation, so after create
+	2. Upload Everything together, Including the media (thumbnail and video) as well as the content details, But it as to be a formdata
 -   **Request Body:**
 
 ```json
@@ -295,8 +297,8 @@ or
 			"creator": "67672cfe46cebe48315a9104",
 			"title": "A good way to make money",
 			"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?",
-			"videoFIleUrl": "",
-			"thumbnailUrl": "",
+			"videoUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4",
+			"thumbnailUrl": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg",
 			"views": 0,
 			"likes": 0,
 			"shares": 0,
@@ -314,9 +316,6 @@ or
 	}
 }
 ```
-
--   **POST** `/api/channels/tubes/upload-video/{id}`
-    Upload the tube video and thumbnail. I assume you know how to use formData...make sure to use formData (protected)
 
 -   **GET** `/api/channels/tubes/my-tube`
     Get tubes related to the logged in creator. (protected)

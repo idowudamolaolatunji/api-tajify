@@ -17,7 +17,6 @@ router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController
 router.patch("/tubes/:id", isAuthProtected, channelsController.updateOneTubeById);
 router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeById);
 
-router.post("/tubes/create", isAuthProtected, channelsController.createTube);
-router.post("/tubes/upload-video/:id", uploadVideo, isAuthProtected, channelsController.uploadTubeVideo);
+router.post("/tubes/create", uploadVideo, isAuthProtected, channelsController.createTube);
 
 module.exports = router;

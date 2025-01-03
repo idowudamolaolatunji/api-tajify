@@ -8,6 +8,10 @@ const sharp = require("sharp");
 ////////////////////////////////////////////////////
 
 
+
+//////////////////////////////////////////////////
+// VIDEOS AND TUBES
+//////////////////////////////////////////////////
 const tubeParameter = [Tube, "tube"]
 
 exports.getAllTubes = refactory.getAll(...tubeParameter);
@@ -68,7 +72,7 @@ exports.getTubes = asyncWrapper(async function(req, res) {
     })
 });
 
-exports.createTube = asyncWrapper(async function(req, res) {
+exports.uploadTube = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const videoFile = req.files.video[0];
     const thumbnailFile = req.files.thumbnail[0];
@@ -85,8 +89,9 @@ exports.createTube = asyncWrapper(async function(req, res) {
     const thumbnailPath = thumbnailBuffer.options.input.file;
     const thumbnailUploadResult = await cloudinary.uploader.upload(thumbnailPath, {
         resource_type: 'image',
-        public_id: userId
+        public_id: Date.now()
     });
+
     if(!thumbnailUploadResult) {
         console.log(err)
         return res.status(500).json({ message: "Error Uploading Thumbnail" })
@@ -97,6 +102,7 @@ exports.createTube = asyncWrapper(async function(req, res) {
         resource_type: 'video',
         public_id: req.body.title
     });
+
     if(!videoUploadResult) {
         console.log(err)
         return res.status(500).json({ message: "Error Uploading Video" })
@@ -117,5 +123,106 @@ exports.createTube = asyncWrapper(async function(req, res) {
         data: {
             tube
         }
+    });
+});
+
+
+
+//////////////////////////////////////////////////
+// AUDIO, PODCASTS AND RADIOS
+//////////////////////////////////////////////////
+exports.getRadioStations = asyncWrapper(async function(req, res) {
+    const { location } = req.params;
+
+    const url = `https://nigeria-radio-stations.p.rapidapi.com/?category=${location}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
+            'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
+        }
+    };
+
+	const response = await fetch(url, options);
+	const result = await response.text();
+	console.log(result);
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            radio_Stations: result
+        }
+    })
+
+})
+
+
+exports.getRadioStationById = asyncWrapper(async function(req, res) {
+    const { id } = req.params;
+
+    const url = `https://nigeria-radio-stations.p.rapidapi.com/?id=${id}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
+            'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
+        }
+    };
+
+	const response = await fetch(url, options);
+	const result = await response.text();
+	console.log(result);
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            radio_Stations: result
+        }
+    })
+
+});
+
+
+exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const audioFile = req.files.audio[0];
+    const coverImageFile = req.files.coverImage[0];
+
+    if(!audioFile) return res.json({ message: "Music file not uploaded correctly!" })
+
+    const audioUploadResult = await cloudinary.uploader.upload(audioFile.path, {
+        resource_type: 'video',
+        public_id: req.body.title
+    });
+
+    if(!audioUploadResult) {
+        return res.status(500).json({ message: "Error Uploading Audio" })
+    }
+
+    let coverImageUploadResult = "";
+    if(coverImageFile) {
+        coverImageUploadResult = await cloudinary.uploader.upload(coverImageFile.path, {
+            resource_type: 'image',
+            public_id: Date.now()
+        });
+    
+        if(!coverImageUploadResult) {
+            return res.status(500).json({ message: "Error Uploading Cover Image" })
+        }
+    }
+
+    const audioUrl = audioUploadResult.secure_url;
+    const coverImageUrl = coverImageUploadResult.secure_url;
+
+    const audio = await Audio.create({
+        creator: userId,
+        audioUrl, coverImageUrl,
+        ...req.body,
+    });
+
+    res.status(200).json({
+        status: "success",
+        message: "Audio Uploaded",
+        data: { audio }
     });
 });

@@ -40,6 +40,7 @@ const upload = multer({
 exports.uploadSingleImage = upload.single('image');
 
 exports.uploadVideo = upload.fields([{ name: 'video', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]);
+exports.uploadAudio = upload.fields([{ name: 'audio', maxCount: 1 }, { name: 'coverImage', maxCount: 1 }]);
 
 
 //////////////////////////////////////////////////

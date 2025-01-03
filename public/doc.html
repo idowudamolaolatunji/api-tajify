@@ -386,7 +386,7 @@
 				<p><strong>GET</strong> <code>/api/channels/tubes/{id}</code> Get a single tube by id</p>
 			</li>
 			<li>
-				<p><strong>POST</strong> <code>/api/channels/tubes/create</code> Creates a new tube. (protected)</p>
+				<p><strong>POST</strong> <code>/api/channels/tubes/upload</code> Uploades a new tube. (protected)</p>
 			</li>
 			<li><strong>Request Body:</strong></li>
 		</ul>
@@ -394,8 +394,9 @@
     <span class="hljs-attr">"title"</span>: <span class="hljs-string">"A good way to make money"</span>,
     <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?"</span>,
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"tube-short"</span>,
-    <span class="hljs-attr">"videoUrl"</span>: {<span class="hljs-attr">"File Object"</span>},
-    <span class="hljs-attr">"thumbnailUrl"</span>: {<span class="hljs-attr">"File Object"</span>},
+    <span class="hljs-attr">"video"</span>: {<span class="hljs-attr">"File Object"</span>},
+    <span class="hljs-attr">"thumbnail"</span>: {<span class="hljs-attr">"File Object"</span>},
+    <span class="hljs-attr">"hashTags"</span>: [<span class="hljs-string">"#makemoney2024"</span>, <span class="hljs-string">"#moneyisgood"</span>]
 }
 </code></pre>
 		<ul>
@@ -410,7 +411,7 @@
 		</ul>
 		<pre><code class="lang-json">{
     <span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
-    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Tube created!"</span>,
+    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Tube uploaded!"</span>,
     <span class="hljs-attr">"data"</span>: {
         <span class="hljs-attr">"tube"</span>: {
             <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,

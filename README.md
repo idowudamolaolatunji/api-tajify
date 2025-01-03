@@ -269,8 +269,8 @@ or
 -   **GET** `/api/channels/tubes/{id}`
     Get a single tube by id
 
--   **POST** `/api/channels/tubes/create`
-    Creates a new tube. (protected)
+-   **POST** `/api/channels/tubes/upload`
+    Uploades a new tube. (protected)
 -   **Request Body:**
 
 ```json
@@ -278,8 +278,9 @@ or
 	"title": "A good way to make money",
 	"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?",
 	"type": "tube-short",
-	"videoUrl": {"File Object"},
-	"thumbnailUrl": {"File Object"},
+	"video": {"File Object"},
+	"thumbnail": {"File Object"},
+	"hashTags": ["#makemoney2024", "#moneyisgood"],
 }
 ```
 
@@ -291,7 +292,7 @@ or
 ```json
 {
 	"status": "success",
-	"message": "Tube created!",
+	"message": "Tube uploaded!",
 	"data": {
 		"tube": {
 			"creator": "67672cfe46cebe48315a9104",

@@ -396,7 +396,7 @@
     <span class="hljs-attr">"type"</span>: <span class="hljs-string">"tube-short"</span>,
     <span class="hljs-attr">"video"</span>: {<span class="hljs-attr">"File Object"</span>},
     <span class="hljs-attr">"thumbnail"</span>: {<span class="hljs-attr">"File Object"</span>},
-    <span class="hljs-attr">"hashTags"</span>: [<span class="hljs-string">"#makemoney2024"</span>, <span class="hljs-string">"#moneyisgood"</span>]
+    <span class="hljs-attr">"hashTags"</span>: [<span class="hljs-string">"#makemoney2024"</span>, <span class="hljs-string">"#moneyisgood"</span>],
 }
 </code></pre>
 		<ul>
@@ -447,5 +447,48 @@
 				<p><strong>DELETE</strong> <code>/api/channels/tubes/{id}</code> Deletes a tube by Id. (protected)</p>
 			</li>
 		</ul>
+		<h3 id="audio-music-">Audio - music:</h3>
+		<ul>
+			<li><strong>POST</strong> <code>/api/channels/audio/upload</code> Uploades a new audio music. (protected)</li>
+			<li><strong>Request Body:</strong></li>
+		</ul>
+		<pre><code class="lang-json">{
+    <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Imago dei - Gospel chant"</span>,
+    <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit. (optional)"</span>,
+    <span class="hljs-attr">"audio"</span>: {<span class="hljs-attr">"File Object"</span>},
+    <span class="hljs-attr">"coverImage"</span>: {<span class="hljs-attr">"File Object"</span>},
+}
+</code></pre>
+		<ul>
+			<li>
+				<strong>Important Note:</strong>
+				<ol>
+					<li>The title and audio field are required, others are optional</li>
+					<li>Upload Everything together using formdata</li>
+				</ol>
+			</li>
+			<li><strong>Request Body:</strong></li>
+		</ul>
+		<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Audio Uploaded"</span>,
+    <span class="hljs-attr">"data"</span>: {
+        <span class="hljs-attr">"audio"</span>: {
+            <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,
+            <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Imago dei - Gospel chant"</span>,
+            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+            <span class="hljs-attr">"streams"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"audioUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3"</span>,
+            <span class="hljs-attr">"coverImageUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png"</span>,
+            <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"6777d0fa362b946f247b3e2d"</span>,
+            <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
+            <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
+            <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"imago-dei-gospel-chant"</span>,
+            <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+        }
+    }
+}
+</code></pre>
 	</body>
 </html>

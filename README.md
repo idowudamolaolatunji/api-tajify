@@ -326,3 +326,49 @@ or
 
 -   **DELETE** `/api/channels/tubes/{id}`
     Deletes a tube by Id. (protected)
+
+
+
+
+### Audio - music:
+
+-   **POST** `/api/channels/audio/upload`
+    Uploades a new audio music. (protected)
+-   **Request Body:**
+
+```json
+{
+	"title": "Imago dei - Gospel chant",
+	"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. (optional)",
+	"audio": {"File Object"},
+	"coverImage": {"File Object"},
+}
+```
+
+-   **Important Note:**
+    1. The title and audio field are required, others are optional
+	2. Upload Everything together using formdata
+-   **Request Body:**
+
+```json
+{
+    "status": "success",
+    "message": "Audio Uploaded",
+    "data": {
+        "audio": {
+            "creator": "67672cfe46cebe48315a9104",
+            "title": "Imago dei - Gospel chant",
+            "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+            "streams": 0,
+            "likes": 0,
+            "audioUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3",
+            "coverImageUrl": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png",
+            "_id": "6777d0fa362b946f247b3e2d",
+            "createdAt": "2025-01-03T11:58:50.461Z",
+            "updatedAt": "2025-01-03T11:58:50.461Z",
+            "slug": "imago-dei-gospel-chant",
+            "__v": 0
+        }
+    }
+}
+```

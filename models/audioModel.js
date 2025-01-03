@@ -28,7 +28,6 @@ const audioSchema = new mongoose.Schema({
 
 
 
-
 audioSchema.pre("save", function(next) {
     if(this.isNew || this.isModified("title")) {
         const slug = slugify(this.title, { lower: true, replacement: "-" });

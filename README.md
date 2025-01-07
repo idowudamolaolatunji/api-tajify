@@ -247,11 +247,14 @@ or
 
 ### Creator Profile:
 
--   **POST** `/api/profile/become-a-creator`
-    Creates a creator profile for the athenticated user and make them a creator therefore they can now upload content. (Protected) - No request body needed
+-   **GET** `/api/profile`  
+    Retrieves all user's profile information.
 
--   **GET** `/api/profile/profile`  
+-   **GET** `/api/profile/my-profile`  
     Retrieves the currently authenticated user's profile information.
+
+-   **POST** `/api/profile/become-a-creator`
+    Creates a creator profile for the athenticated user and make them a creator therefore they can now upload content. (Protected) - No request body needed.
 
 ### Wallet:
 

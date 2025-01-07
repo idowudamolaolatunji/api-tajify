@@ -9,7 +9,6 @@ const userProfileSchema = new mongoose.Schema({
     },
     bio: {
         type: mongoose.Schema.Types.Mixed,
-        required: true
     },
     website: String,
     location: {
@@ -18,17 +17,18 @@ const userProfileSchema = new mongoose.Schema({
         city: String,
         zipCode: String,
     },
-    accountType: {
-        type: String,
-        enum: [""]
-    },
     postCount: { type: Number, default: 0 },
     followerCount: { type: Number, default: 0 },
     followingCount: { type: Number, default: 0 },
     likeCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },
     interests: [String],
-    skills: [String],
+
 }, {
     timestamps: true,
-})
+});
+
+
+
+const UserProfile = mongoose.model("UserProfile", userProfileSchema);
+module.exports = UserProfile;

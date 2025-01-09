@@ -5,6 +5,8 @@ const refactory = require("./handleRefactory");
 const cloudinary = require("../utils/cloudinary");
 const sharp = require("sharp");
 const Audio = require("../models/audioModel");
+const Comment = require("../models/commentModel");
+const UserProfile = require("../models/userProfilesModel");
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -75,10 +77,10 @@ exports.getTubes = asyncWrapper(async function(req, res) {
 
 exports.uploadTube = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const videoFile = req.files.video[0];
+    const tubeFile = req.files.tube[0];
     const thumbnailFile = req.files.thumbnail[0];
 
-    if(!videoFile || !thumbnailFile) return res.json({ message: "Video and Thumbnail are required!" })
+    if(!tubeFile || !thumbnailFile) return res.json({ message: "Tube video and thumbnail are required!" })
 
     const thumbnailSize = req.body.type == "tube-short" ? [720, 1280] : [1080, 1950];
     const thumbnailBuffer = sharp(thumbnailFile.path)
@@ -98,8 +100,7 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
         return res.status(500).json({ message: "Error Uploading Thumbnail" })
     }
 
-
-    const videoUploadResult = await cloudinary.uploader.upload(videoFile.path, {
+    const videoUploadResult = await cloudinary.uploader.upload(tubeFile.path, {
         resource_type: 'video',
         public_id: req.body.title
     });
@@ -121,16 +122,70 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
     res.status(200).json({
         status: "success",
         message: "Tube Uploaded",
-        data: {
-            tube
-        }
+        data: { tube }
     });
 });
 
 
 
+
+
+
 //////////////////////////////////////////////////
-// AUDIO, PODCASTS AND RADIOS
+// AUDIO AND MUSIC
+//////////////////////////////////////////////////
+exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const audioFile = req.files.audio[0];
+    const coverImageFile = req.files.coverImage[0];
+
+    if(!audioFile) return res.json({ message: "Music file not uploaded correctly!" })
+
+    const audioUploadResult = await cloudinary.uploader.upload(audioFile.path, {
+        resource_type: 'video',
+        public_id: req.body.title
+    });
+
+    if(!audioUploadResult) {
+        return res.status(500).json({ message: "Error Uploading Audio" })
+    }
+
+    let coverImageUploadResult = "";
+    if(coverImageFile) {
+        coverImageUploadResult = await cloudinary.uploader.upload(coverImageFile.path, {
+            resource_type: 'image',
+            public_id: Date.now()
+        });
+    
+        if(!coverImageUploadResult) {
+            return res.status(500).json({ message: "Error Uploading Cover Image" })
+        }
+    }
+
+    const audioUrl = audioUploadResult.secure_url;
+    const coverImageUrl = coverImageUploadResult.secure_url;
+
+    const audio = await Audio.create({
+        creator: userId,
+        audioUrl, coverImageUrl,
+        ...req.body,
+    });
+
+    res.status(201).json({
+        status: "success",
+        message: "Audio Uploaded",
+        data: { audio }
+    });
+});
+
+
+
+
+
+
+
+//////////////////////////////////////////////////
+// PODCASTS AND RADIOS
 //////////////////////////////////////////////////
 exports.getRadioStations = asyncWrapper(async function(req, res) {
     const { location } = req.params;
@@ -184,46 +239,100 @@ exports.getRadioStationById = asyncWrapper(async function(req, res) {
 });
 
 
-exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
+
+
+//////////////////////////////////////////////////
+// COMMENTING AND LIKING POST
+//////////////////////////////////////////////////
+
+exports.writeComment = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const audioFile = req.files.audio[0];
-    const coverImageFile = req.files.coverImage[0];
+    const { itemId, content } = req.body;
 
-    if(!audioFile) return res.json({ message: "Music file not uploaded correctly!" })
-
-    const audioUploadResult = await cloudinary.uploader.upload(audioFile.path, {
-        resource_type: 'video',
-        public_id: req.body.title
+    if (!itemId || !content) {
+        return res.json({ message: "Invalid request data" });
+    }
+  
+    const userProfile = await UserProfile.findOne({ user: userId });
+    const newComment = await Comment.create({
+        userId,
+        itemId,
+        content,
+        userProfile,
     });
 
-    if(!audioUploadResult) {
-        return res.status(500).json({ message: "Error Uploading Audio" })
+    const post = await Tube.findOne({ _id: itemId })
+    if(post) {
+        await Tube.updateOne(
+            { _id: post._id },
+            { $inc: { comments: 1 } },
+            { runValidators: true, new: true }
+        )
     }
 
-    let coverImageUploadResult = "";
-    if(coverImageFile) {
-        coverImageUploadResult = await cloudinary.uploader.upload(coverImageFile.path, {
-            resource_type: 'image',
-            public_id: Date.now()
-        });
+    res.status(201).json({
+        status: "success",
+        message: "Commented!",
+        data: { comment: newComment }
+    })
+});
+
+
+exports.editComment = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const { id } = req.params;
+    const { content } = req.body;
+
+    const comment = await Comment.findOne({ id, userId });
+    if(!comment) return res.json({ message: "Cannot find comment" });
     
-        if(!coverImageUploadResult) {
-            return res.status(500).json({ message: "Error Uploading Cover Image" })
-        }
-    }
-
-    const audioUrl = audioUploadResult.secure_url;
-    const coverImageUrl = coverImageUploadResult.secure_url;
-
-    const audio = await Audio.create({
-        creator: userId,
-        audioUrl, coverImageUrl,
-        ...req.body,
-    });
+    const editedComment = await Comment.updateOne(
+        { _id: comment.id }, { $set: { content } },
+        { runValidators: true, new: true }
+    );
 
     res.status(200).json({
         status: "success",
-        message: "Audio Uploaded",
-        data: { audio }
-    });
+        message: "Editted!",
+        data: { comment: editedComment }
+    })
 });
+
+
+exports.deleteComment = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const { id } = req.params;
+
+    const comment = await Comment.findOne({ id, userId });
+    if(!comment) return res.json({ message: "Cannot find comment" });
+    await Comment.deleteOne({ _id: comment.id });
+
+    const post = await Tube.findOne({ _id: comment.itemId })
+    if(post) {
+        await Tube.updateOne(
+            { _id: post._id },
+            { $inc: { comments: -1 } },
+            { runValidators: true, new: true }
+        )
+    }
+
+    res.status(200).json({
+        status: "success",
+        message: "Deleted!",
+        data: null
+    })
+});
+
+
+exports.getItemComments = asyncWrapper(async function(req, res) {
+    const { itemId } = req.params;
+    const comments = await Comment.find({ itemId });
+    res.status(200).json({
+        status: "success",
+        count: comments.length,
+        data: { comments }
+    })
+});
+
+exports.getAllComments = refactory.getAllPaginated(Comment, "comment");
+exports.getCommentById = refactory.getOne(Comment, "comment");

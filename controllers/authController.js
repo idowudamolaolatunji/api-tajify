@@ -108,6 +108,9 @@ exports.verifyOtp = asyncWrapper(async function(req, res) {
     user.otpCode = undefined;
     await user.save({ validateBeforeSave: false });
 
+    // CREATE A PROFILE
+    await UserProfile.create({ user: user._id });
+
     // SEND BACK RESPONSE
     res.status(200).json({
         status: 'success',
@@ -133,7 +136,6 @@ exports.requestOtp = asyncWrapper(async function(req, res) {
 
     // GENERATE NEW OTP CODE
     const otp = generateOtp();
-    console.log(otp)
     const emailOtpResendMessage = otpEmail(otp, user.firstname);
     user.otpIssuedAt = Date.now();
     user.otpCode = otp;

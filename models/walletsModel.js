@@ -12,7 +12,15 @@ const walletSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    balance: {
+    taji: {
+        type: Number,
+        default: 0,
+    },
+    rewardPoint: {
+        type: Number,
+        default: 0,
+    },
+    voteCredit: {
         type: Number,
         default: 0,
     },

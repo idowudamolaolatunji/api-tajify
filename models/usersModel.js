@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
         required: true,
     },
     fullname: String,
-    username: String,
     phoneNumber: String,
     email: {
         type: String,
@@ -43,10 +42,6 @@ const userSchema = new mongoose.Schema({
             },
             message: 'Password are not the same!',
         }
-    },
-    image: {
-        type: String,
-        default: ''
     },
     role: {
         type: String,

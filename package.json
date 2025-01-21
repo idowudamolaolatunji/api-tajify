@@ -11,7 +11,6 @@
   "author": "Idowu Damola Olatunji",
   "license": "ISC",
   "dependencies": {
-    "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
@@ -25,7 +24,6 @@
     "multer": "^1.4.5-lts.1",
     "nanoid": "^3.3.4",
     "nodemailer": "^6.9.16",
-    "sharp": "^0.33.5",
     "slugify": "^1.6.6",
     "validator": "^13.12.0"
   },

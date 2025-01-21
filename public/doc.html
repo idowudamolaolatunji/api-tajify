@@ -420,8 +420,15 @@
             <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,
             <span class="hljs-attr">"title"</span>: <span class="hljs-string">"A good way to make money"</span>,
             <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?"</span>,
-            <span class="hljs-attr">"videoUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4"</span>,
-            <span class="hljs-attr">"thumbnailUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg"</span>,
+            <span class="hljs-attr">"video"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4"</span>,
+                <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"tube-327312812910"</span>,
+                <span class="hljs-attr">"duration_in_sec"</span>: <span class="hljs-number">102.23</span>
+            },
+            <span class="hljs-attr">"thumbnail"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg"</span>,
+                <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"thumbnail-327312812910"</span>
+            },
             <span class="hljs-attr">"views"</span>: <span class="hljs-number">0</span>,
             <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
             <span class="hljs-attr">"shares"</span>: <span class="hljs-number">0</span>,
@@ -466,32 +473,153 @@
 			<li>
 				<strong>Important Note:</strong>
 				<ol>
-					<li>The title and audio field are required, others are optional</li>
+					<li>The title and audio field and cover image are required, others are optional</li>
 					<li>Upload Everything together using formdata</li>
 				</ol>
 			</li>
+		</ul>
+		<ul>
+			<li>
+				<strong>Response</strong>
+				<pre><code class="lang-json">{
+<span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+<span class="hljs-attr">"message"</span>: <span class="hljs-string">"Audio Uploaded"</span>,
+<span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"audio"</span>: {
+        <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,
+        <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Imago dei - Gospel chant"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+        <span class="hljs-attr">"streams"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
+        <span class="hljs-attr">"audio"</span>: {
+            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3"</span>,
+            <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"audio-84543873232"</span>,
+            <span class="hljs-attr">"duration_in_sec"</span>: <span class="hljs-number">102.23</span>
+        },
+        <span class="hljs-attr">"coverImage"</span>: {
+            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png"</span>,
+            <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"coverimage-84543873232"</span>
+        },
+        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"6777d0fa362b946f247b3e2d"</span>,
+        <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
+        <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
+        <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"imago-dei-gospel-chant"</span>,
+        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+    }
+}
+}
+</code></pre>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<p><strong>GET</strong> <code>/api/channels/music/my-music</code> Get music related to the logged in creator. (protected)</p>
+			</li>
+			<li>
+				<p><strong>PATCH</strong> <code>/api/channels/music/{id}</code> Updates an existing music by Id. (protected)</p>
+			</li>
+			<li>
+				<p><strong>DELETE</strong> <code>/api/channels/music/{id}</code> Deletes a music by Id. (protected)</p>
+			</li>
+		</ul>
+		<h3 id="audio-podcasts-">Audio - podcasts:</h3>
+		<ul>
+			<li><strong>POST</strong> <code>/api/channels/podcast/create</code> Create a new podcast. (protected)</li>
 			<li><strong>Request Body:</strong></li>
 		</ul>
 		<pre><code class="lang-json">{
-    <span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
-    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Audio Uploaded"</span>,
-    <span class="hljs-attr">"data"</span>: {
-        <span class="hljs-attr">"audio"</span>: {
-            <span class="hljs-attr">"creator"</span>: <span class="hljs-string">"67672cfe46cebe48315a9104"</span>,
-            <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Imago dei - Gospel chant"</span>,
-            <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
-            <span class="hljs-attr">"streams"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
-            <span class="hljs-attr">"audioUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3"</span>,
-            <span class="hljs-attr">"coverImageUrl"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png"</span>,
-            <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"6777d0fa362b946f247b3e2d"</span>,
-            <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
-            <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-03T11:58:50.461Z"</span>,
-            <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"imago-dei-gospel-chant"</span>,
-            <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
-        }
-    }
+    <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Menism - Podcast for men"</span>,
+    <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+    <span class="hljs-attr">"coverImage"</span>: {<span class="hljs-attr">"File Object"</span>},
 }
 </code></pre>
+		<ul>
+			<li>
+				<strong>Response</strong>
+				<pre><code class="lang-json">{
+<span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+<span class="hljs-attr">"message"</span>: <span class="hljs-string">"Podcast Uploaded"</span>,
+<span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"podcast"</span>: {
+        <span class="hljs-attr">"creatorProfile"</span>: <span class="hljs-string">"678e0e14abb0db93f3706e18"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Menism - Podcast for men"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+        <span class="hljs-attr">"coverImage"</span>: {
+            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/podcast-coverimage-1737405724832?_a=BAMCkGOY0"</span>,
+            <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"podcast-coverimage-1737405724832"</span>
+        },
+        <span class="hljs-attr">"episodes"</span>: [],
+        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"678eb5221487e0be6ee41b3e"</span>,
+        <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-20T20:42:10.607Z"</span>,
+        <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-20T20:42:10.607Z"</span>,
+        <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"menism-podcast"</span>,
+        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+    }
+}
+}
+</code></pre>
+			</li>
+		</ul>
+		<ul>
+			<li><strong>POST</strong> <code>/api/channels/podcast/episode/{id}</code> Upload a new podcast episode. (protected)</li>
+			<li><strong>Request Body:</strong></li>
+		</ul>
+		<pre><code class="lang-json">{
+    <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Menism - Episode 1"</span>,
+    <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit"</span>,
+    <span class="hljs-attr">"audio"</span>: {<span class="hljs-attr">"File Object"</span>},
+}
+</code></pre>
+		<ul>
+			<li>
+				<strong>Response</strong>
+				<pre><code class="lang-json">{
+<span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+<span class="hljs-attr">"message"</span>: <span class="hljs-string">"Episode Uploaded"</span>,
+<span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"podcast"</span>: {
+        <span class="hljs-attr">"coverImage"</span>: {
+            <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/podcast-coverimage-1737405724832?_a=BAMCkGOY0"</span>,
+            <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"podcast-coverimage-1737405724832"</span>
+        },
+        <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"678eb5221487e0be6ee41b3e"</span>,
+        <span class="hljs-attr">"creatorProfile"</span>: {
+            <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"678e0e14abb0db93f3706e18"</span>
+        },
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"Menism Podcast"</span>,
+        <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+        <span class="hljs-attr">"episodes"</span>: [
+            {
+                <span class="hljs-attr">"audio"</span>: {
+                    <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1737406051/podcast-episode-1737406035598.mp3"</span>,
+                    <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"podcast-episode-1737406035598"</span>,
+                    <span class="hljs-attr">"duration_in_sec"</span>: <span class="hljs-number">219.846531</span>
+                },
+                <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Episode 1"</span>,
+                <span class="hljs-attr">"description"</span>: <span class="hljs-string">"Lorem ipsum dolor sit amet consectetur adipisicing elit."</span>,
+                <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"678eb67070e1de878190ee00"</span>
+            }
+        ],
+        <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-20T20:42:10.607Z"</span>,
+        <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-20T20:47:44.144Z"</span>,
+        <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"menism-podcast"</span>,
+        <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+    }
+}
+}
+</code></pre>
+			</li>
+		</ul>
+		<ul>
+			<li>
+				<p><strong>GET</strong> <code>/api/channels/podcasts/my-podcasts</code> Get podcasts related to the logged in creator. (protected)</p>
+			</li>
+			<li>
+				<p><strong>PATCH</strong> <code>/api/channels/podcasts/{id}</code> Updates an existing podcasts by Id. (protected)</p>
+			</li>
+			<li>
+				<p><strong>DELETE</strong> <code>/api/channels/podcasts/{id}</code> Deletes a podcasts by Id. (protected)</p>
+			</li>
+		</ul>
 	</body>
 </html>

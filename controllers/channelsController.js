@@ -3,7 +3,6 @@ const Tube = require("../models/tubesModel");
 const { asyncWrapper } = require("../utils/handlers");
 const refactory = require("./handleRefactory");
 const cloudinary = require("../utils/cloudinary");
-const sharp = require("sharp");
 const Audio = require("../models/audioModel");
 const Comment = require("../models/commentModel");
 const Profile = require("../models/profile");
@@ -17,13 +16,11 @@ const { FirstCap } = require("../utils/helpers");
 //////////////////////////////////////////////////
 // VIDEOS AND TUBES
 //////////////////////////////////////////////////
-const tubeParameter = [Tube, "tube"]
-
-exports.getAllTubes = refactory.getAll(...tubeParameter);
-exports.getAllMyTubes = refactory.getAllMine(...tubeParameter);
-exports.getOneTubeById = refactory.getOne(...tubeParameter);
-exports.updateOneTubeById = refactory.updateOne(...tubeParameter);
-exports.deleteOneTubeById = refactory.updateOne(...tubeParameter);
+exports.getAllTubes = refactory.getAll(Tube, "tube");
+exports.getAllMyTubes = refactory.getAllMine(Tube, "tube");
+exports.getOneTubeById = refactory.getOne(Tube, "tube");
+exports.updateOneTubeById = refactory.updateOne(Tube, "tube");
+exports.deleteOneTubeById = refactory.updateOne(Tube, "tube");
 
 exports.getTubes = asyncWrapper(async function(req, res) {
     const { type, limit, page } = req.query;
@@ -154,7 +151,6 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
 });
 
 
-
 //////////////////////////////////////////////////
 // AUDIO AND MUSIC
 //////////////////////////////////////////////////
@@ -220,6 +216,11 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
     });
 });
 
+exports.getAllMusic = refactory.getAll(Audio, "music");
+exports.getAllMyMusic = refactory.getAllMine(Audio, "music");
+exports.getOneMusicById = refactory.getOne(Audio, "music");
+exports.updateOneMusicById = refactory.updateOne(Audio, "music");
+exports.deleteOneMusicById = refactory.updateOne(Audio, "music");
 
 //////////////////////////////////////////////////
 // PODCASTS
@@ -311,6 +312,13 @@ exports.uploadEpisode = asyncWrapper(async function(req, res) {
         message: `Episode: ${FirstCap(title)} Uploaded`,
     });
 });
+
+
+exports.getAllPodcasts = refactory.getAll(Podcast, "podcast");
+exports.getAllMyPodcasts = refactory.getAllMine(Podcast, "podcast");
+exports.getOnePodcastById = refactory.getOne(Podcast, "podcast");
+exports.updateOnePodcastById = refactory.updateOne(Podcast, "podcast");
+exports.deleteOnePodcastById = refactory.updateOne(Podcast, "podcast");
 
 
 //////////////////////////////////////////////////
@@ -409,7 +417,6 @@ exports.getItemComments = asyncWrapper(async function(req, res) {
 
 exports.getAllComments = refactory.getAllPaginated(Comment, "comment");
 exports.getCommentById = refactory.getOne(Comment, "comment");
-
 
 
 

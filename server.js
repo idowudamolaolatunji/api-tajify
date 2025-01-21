@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 
 const app = require('./app');
 dotenv.config({ path: './config.env' });
-const PORT = process.env.PORT || 3101;
+const PORT = process.env.PORT || 3222;
 const HOST = process.env.HOST;
 
 //////////////////////////////////////////////

@@ -358,8 +358,9 @@ or
 -   **Important Note:**
     1. The title and audio field and cover image are required, others are optional
 	2. Upload Everything together using formdata
--   **Request Body:**
 
+
+-   **Response**
 ```json
 {
     "status": "success",
@@ -389,3 +390,119 @@ or
     }
 }
 ```
+
+
+-   **GET** `/api/channels/music/my-music`
+    Get music related to the logged in creator. (protected)
+
+-   **PATCH** `/api/channels/music/{id}`
+    Updates an existing music by Id. (protected)
+
+-   **DELETE** `/api/channels/music/{id}`
+    Deletes a music by Id. (protected)
+
+
+
+
+
+
+### Audio - podcasts:
+
+-   **POST** `/api/channels/podcast/create`
+    Create a new podcast. (protected)
+-   **Request Body:**
+
+```json
+{
+	"title": "Menism - Podcast for men",
+	"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+	"coverImage": {"File Object"},
+}
+```
+
+-   **Response**
+```json
+{
+    "status": "success",
+    "message": "Podcast Uploaded",
+    "data": {
+        "podcast": {
+            "creatorProfile": "678e0e14abb0db93f3706e18",
+            "name": "Menism - Podcast for men",
+            "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+            "coverImage": {
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/podcast-coverimage-1737405724832?_a=BAMCkGOY0",
+                "public_id": "podcast-coverimage-1737405724832"
+            },
+            "episodes": [],
+            "_id": "678eb5221487e0be6ee41b3e",
+            "createdAt": "2025-01-20T20:42:10.607Z",
+            "updatedAt": "2025-01-20T20:42:10.607Z",
+            "slug": "menism-podcast",
+            "__v": 0
+        }
+    }
+}
+```
+
+
+-   **POST** `/api/channels/podcast/episode/{id}`
+    Upload a new podcast episode. (protected)
+-   **Request Body:**
+
+```json
+{
+	"title": "Menism - Episode 1",
+	"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit",
+	"audio": {"File Object"},
+}
+```
+
+-   **Response**
+```json
+{
+    "status": "success",
+    "message": "Episode Uploaded",
+    "data": {
+        "podcast": {
+            "coverImage": {
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/podcast-coverimage-1737405724832?_a=BAMCkGOY0",
+                "public_id": "podcast-coverimage-1737405724832"
+            },
+            "_id": "678eb5221487e0be6ee41b3e",
+            "creatorProfile": {
+                "_id": "678e0e14abb0db93f3706e18"
+            },
+            "name": "Menism Podcast",
+            "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+            "episodes": [
+                {
+                    "audio": {
+                        "url": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1737406051/podcast-episode-1737406035598.mp3",
+                        "public_id": "podcast-episode-1737406035598",
+                        "duration_in_sec": 219.846531
+                    },
+                    "title": "Episode 1",
+                    "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
+                    "_id": "678eb67070e1de878190ee00"
+                }
+            ],
+            "createdAt": "2025-01-20T20:42:10.607Z",
+            "updatedAt": "2025-01-20T20:47:44.144Z",
+            "slug": "menism-podcast",
+            "__v": 0
+        }
+    }
+}
+```
+
+
+-   **GET** `/api/channels/podcasts/my-podcasts`
+    Get podcasts related to the logged in creator. (protected)
+
+-   **PATCH** `/api/channels/podcasts/{id}`
+    Updates an existing podcasts by Id. (protected)
+
+-   **DELETE** `/api/channels/podcasts/{id}`
+    Deletes a podcasts by Id. (protected)
+

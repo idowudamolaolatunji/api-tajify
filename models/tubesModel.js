@@ -1,18 +1,15 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
+const { nanoid } = require("nanoid");
 
 
 const tubesSchema = new mongoose.Schema({
-    creator: {
+    creatorProfile: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Profile",
         required: true,
     },
-    title: {
-        type: String,
-        required: true,
-        trim: true,
-    },
+    title: { type: String, trim: true },
     description: {
         type: mongoose.Schema.Types.Mixed,
         required: true
@@ -28,8 +25,15 @@ const tubesSchema = new mongoose.Schema({
         required: true,
     },
     hashTags: [String],
-    videoUrl: { type: String, default: "" },
-    thumbnailUrl: { type: String, default: "" },
+    video: { 
+        public_id: String,
+        duration_in_sec: Number,
+        url: { type: String, required: true },
+    },
+    thumbnail: {
+        url: { type: String, required: true },
+        public_id: String,
+    },
     slug: String,
     lastModified: { type: Date, default: null },
 }, {
@@ -40,7 +44,8 @@ const tubesSchema = new mongoose.Schema({
 
 tubesSchema.pre("save", function(next) {
     if(this.isNew || this.isModified("title")) {
-        const slug = slugify(this.title, { lower: true, replacement: "-" });
+        const title = this.title;
+        const slug = title ? slugify(title, { lower: true, replacement: "-" }) : nanoid()
         this.slug = slug;
     }
 
@@ -61,8 +66,8 @@ tubesSchema.pre("save", function(next) {
 
 tubesSchema.pre(/^find/, function(next) {
     this.populate({
-        path: "creator",
-        select: "_id username",
+        path: "creatorProfile",
+        select: "_id profileName username profileImage",
     });
 
     next();

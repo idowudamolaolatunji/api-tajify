@@ -1,13 +1,9 @@
 const mongoose = require('mongoose');
 
 const commentSchema = new mongoose.Schema({
-    userId: {
-        type: mongoose.SchemaTypes.ObjectId,
-        required: true,
-    },
     userProfile: {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: 'UserProfile',
+        ref: 'Profile',
         required: true,
     },
     itemId: {
@@ -23,6 +19,7 @@ const commentSchema = new mongoose.Schema({
 });
 
 commentSchema.pre(/^find/, function(next) {
+
     this.populate({
         path: 'userProfile',
         select: '_id username profileImage'

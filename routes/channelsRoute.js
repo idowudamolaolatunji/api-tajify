@@ -1,7 +1,7 @@
 const express = require('express');
 const channelsController = require('../controllers/channelsController');
 const { isAuthProtected, isRestricted } = require('../middlewares/protected');
-const { uploadSingleTube, uploadSingleAudio } = require('../middlewares/multer');
+const { uploadSingleTube, uploadSingleAudio, uploadSingleImage } = require('../middlewares/multer');
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -19,8 +19,8 @@ router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeByI
 
 router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsController.uploadTube);
 router.post("/audio/upload", uploadSingleAudio, isAuthProtected, channelsController.uploadMusicAudio);
+router.post("/podcast/create", uploadSingleImage, isAuthProtected, channelsController.createPodcast);
+router.post("/podcast/episode/:id", uploadSingleAudio, isAuthProtected, channelsController.uploadEpisode);
 
-router.get("/radios/:location", channelsController.getRadioStations);
-router.get("/radios/:id/listen", channelsController.getRadioStationById);
 
 module.exports = router;

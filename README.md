@@ -301,8 +301,15 @@ or
 			"creator": "67672cfe46cebe48315a9104",
 			"title": "A good way to make money",
 			"description": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Laboriosam omnis, pariatur nobis numquam quidem quo?",
-			"videoUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4",
-			"thumbnailUrl": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg",
+			"video": {
+				"url": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735849346/grbxt58knxbcpsayjnrs.mp4",
+				"public_id": "tube-327312812910",
+				"duration_in_sec": 102.23
+			},
+			"thumbnail": {
+				"url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735849346/grbxt58knxbcpsayjnrs.jpg",
+				"public_id": "thumbnail-327312812910"
+			},
 			"views": 0,
 			"likes": 0,
 			"shares": 0,
@@ -349,7 +356,7 @@ or
 ```
 
 -   **Important Note:**
-    1. The title and audio field are required, others are optional
+    1. The title and audio field and cover image are required, others are optional
 	2. Upload Everything together using formdata
 -   **Request Body:**
 
@@ -364,8 +371,15 @@ or
             "description": "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
             "streams": 0,
             "likes": 0,
-            "audioUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3",
-            "coverImageUrl": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png",
+            "audio": {
+				"url": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1735905353/Imago%20dei%20-%20Gospel%20chant.mp3",
+				"public_id": "audio-84543873232",
+				"duration_in_sec": 102.23
+			},
+            "coverImage": {
+				"url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/v1735905531/1735905528566.png",
+				"public_id": "coverimage-84543873232"
+			},
             "_id": "6777d0fa362b946f247b3e2d",
             "createdAt": "2025-01-03T11:58:50.461Z",
             "updatedAt": "2025-01-03T11:58:50.461Z",

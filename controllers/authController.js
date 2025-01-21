@@ -5,6 +5,7 @@ const User = require('../models/usersModel');
 const { asyncWrapper } = require('../utils/handlers');
 const { generateOtp, signToken } = require('../utils/helpers');
 const sendEmail = require('../utils/sendEmail');
+const Profile = require("../models/profile");
 
 
 
@@ -109,7 +110,7 @@ exports.verifyOtp = asyncWrapper(async function(req, res) {
     await user.save({ validateBeforeSave: false });
 
     // CREATE A PROFILE
-    await UserProfile.create({ user: user._id });
+    await Profile.create({ user: user._id, username: user.username });
 
     // SEND BACK RESPONSE
     res.status(200).json({

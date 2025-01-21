@@ -1,5 +1,5 @@
 const Notification = require("../models/notificationModel");
-const UserProfile = require("../models/userProfilesModel");
+const Profile = require("../models/profile");
 const { asyncWrapper } = require("../utils/handlers");
 const { filterObj, formatDate, countNum } = require("../utils/helpers");
 const refactory = require("./handleRefactory");
@@ -11,33 +11,30 @@ const refactory = require("./handleRefactory");
 //////////////////////////////////////////////////
 exports.becomeCreator = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const already_a_Creator = await UserProfile.findOne({ user: userId })
+    const already_a_Creator = await Profile.findOne({ user: userId })
 
     if(already_a_Creator.isCreator) return res.json({
         message: "Cannot process request, You are already a creator!"
     })
 
-    const createdProfile = await UserProfile.updateOne(
+    const creatorProfile = await Profile.updateOne(
         { user: userId },
         { $set: { isCreator: true } },
         { runValidators: true, new: true }
     );
 
-    res.status(201).json({
+    res.status(200).json({
         status: "success",
-        message: "Profile Created!",
-        data: {
-            profile: createdProfile
-        }
+        message: "You are now a Creator!",
     })
 });
 
-exports.getAllProfiles = refactory.getAll(UserProfile, "Profile")
+exports.getAllProfiles = refactory.getAll(Profile, "Profile")
 
 exports.getMyProfile = asyncWrapper(async function(req, res) {
     const creatorId = req.user._id;
 
-    const profile = await UserProfile.findOne({ user: creatorId });
+    const profile = await Profile.findOne({ user: creatorId });
     if(!profile.isCreator) return res.json({ message: "You are not yet a creator!" });
 
     res.status(201).json({
@@ -49,7 +46,7 @@ exports.getMyProfile = asyncWrapper(async function(req, res) {
 exports.updateProfile = asyncWrapper(async function(req, res) {
     const creatorId = req.user._id;
 
-    const profile = await UserProfile.findOne({ user: creatorId });
+    const profile = await Profile.findOne({ user: creatorId });
     if(!profile.isCreator) return res.json({
         message: "You are not yet a creator!"
     });
@@ -57,7 +54,7 @@ exports.updateProfile = asyncWrapper(async function(req, res) {
     const filterArray = ["bio", "website", "country", "country", "city", "zipCode", "interests"];
     const filteredBody = filterObj(req.body, ...filterArray);
 
-    const updatedProfile = await UserProfile.updateOne(
+    const updatedProfile = await Profile.updateOne(
         { user: creatorId },
         { $set: filteredBody },
         { runValidators: true, new: true }
@@ -80,25 +77,25 @@ exports.followCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
     const profileId = req.params.id;
 
-    const currentUserProfile = await UserProfile.findOne({ user: currentUserId });
-    const profileToFollow = await UserProfile.findOne({ _id: profileId, isCreator: true });
+    const currentProfile = await Profile.findOne({ user: currentUserId });
+    const profileToFollow = await Profile.findOne({ _id: profileId, isCreator: true });
     if(!profileToFollow) return res.json({ message: "Only creators can be followed" });
 
-    if (currentUserProfile.following.includes(profileToFollow._id)) {
+    if (currentProfile.following.includes(profileToFollow._id)) {
         return res.json({ message: "Already following creator" });
     }
 
-    profileToFollow.followers.push(currentUserProfile._id);
+    profileToFollow.followers.push(currentProfile._id);
     await profileToFollow.save({ validateBeforeSave: false });
 
-    currentUserProfile.following.push(profileToFollow._id);
-    await currentUserProfile.save({ validateBeforeSave: false });
+    currentProfile.following.push(profileToFollow._id);
+    await currentProfile.save({ validateBeforeSave: false });
 
     await Notification.create({
         userId: profileToFollow.user,
-        title: `@${currentUserProfile.username}`,
+        title: `@${currentProfile.username}`,
         content: `started following you ${formatDate}`,
-        extraPayload: { identifier: "Follower Id", value: currentUserProfile._id }
+        extraPayload: { identifier: "Follower Id", value: currentProfile._id }
     });
 
     res.status(200).json({
@@ -111,23 +108,23 @@ exports.followBackCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
     const profileId = req.params.id;
 
-    const currentUserProfile = await UserProfile.findOne({ user: currentUserId });
-    const profileToFollowBack = await UserProfile.findOne({ user: profileId, isCreator: true });
+    const currentProfile = await Profile.findOne({ user: currentUserId });
+    const profileToFollowBack = await Profile.findOne({ user: profileId, isCreator: true });
     if(!profileToFollowBack) return res.json({ message: "Only creators can be followed back" });
 
-    if(currentUserProfile.following.includes(profileToFollowBack._id)) {
+    if(currentProfile.following.includes(profileToFollowBack._id)) {
         return res.json({ message: "Already following creator" });
     }
 
-    profileToFollowBack.followers.push(currentUserProfile._id);
+    profileToFollowBack.followers.push(currentProfile._id);
     await profileToFollowBack.save({ validateBeforeSave: false });
 
-    currentUserProfile.following.push(profileToFollowBack._id);
-    await currentUserProfile.save({ validateBeforeSave: false });
+    currentProfile.following.push(profileToFollowBack._id);
+    await currentProfile.save({ validateBeforeSave: false });
 
     await Notification.create({
         user: profileToFollowBack._id,
-        title: `@${currentUserProfile.username}`,
+        title: `@${currentProfile.username}`,
         content: `followed you back ${formatDate}`,
     });
 
@@ -141,18 +138,18 @@ exports.unfollowCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
     const profileId = req.params.id;
 
-    const currentUserProfile = await UserProfile.findOne({ user: currentUserId });
-    const profileToUnfollow = await UserProfile.findOne({ user: profileId, isCreator: true });
+    const currentProfile = await Profile.findOne({ user: currentUserId });
+    const profileToUnfollow = await Profile.findOne({ user: profileId, isCreator: true });
 
-    if(!profileToUnfollow || !currentUserProfile.following.includes(profileToUnfollow.id)) {
+    if(!profileToUnfollow || !currentProfile.following.includes(profileToUnfollow.id)) {
         return res.json({ message: "Only unfollow creator you already follow" });
     }
 
-    profileToUnfollow.followers.filter((id) => id !== currentUserProfile._id);
+    profileToUnfollow.followers.filter((id) => id !== currentProfile._id);
     await profileToUnfollow.save({ validateBeforeSave: false });
 
-    currentUserProfile.following.filter((id) => id !== profileToUnfollow._id);
-    await currentUserProfile.save({ validateBeforeSave: false });
+    currentProfile.following.filter((id) => id !== profileToUnfollow._id);
+    await currentProfile.save({ validateBeforeSave: false });
 
     res.status(200).json({
         status: 'success',
@@ -162,7 +159,7 @@ exports.unfollowCreator = asyncWrapper(async function(req, res) {
 
 exports.getMyFollowers = asyncWrapper(async function(req, res) {
     const creatorId = req.user.id;
-    const profile = await UserProfile.findOne({ user: creatorId, isCreator: true });
+    const profile = await Profile.findOne({ user: creatorId, isCreator: true });
     if(!profile) return res.json({ message: "You are not a creator" });
 
     const followers = [...profile.followers];
@@ -174,7 +171,7 @@ exports.getMyFollowers = asyncWrapper(async function(req, res) {
 });
 
 exports.getMyFollowings = asyncWrapper(async function(req, res) {
-    const profile = await UserProfile.findOne({ user: req.user.id });
+    const profile = await Profile.findOne({ user: req.user.id });
     const followings = [...profile.following];
 
     res.status(200).json({

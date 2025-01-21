@@ -21,7 +21,7 @@ exports.formatNumber = function(amount) {
 
 exports.formatDate = function(givenDate) {
     const date = moment(givenDate);
-    return date.format('DD-MM-YYYY');
+    return date.format('DD/MM/YYYY');
 }
 
 // FORMAT DATE, BUT FOR LATER FORMAT
@@ -36,9 +36,9 @@ exports.formatfutureDate = function(hours) {
     return futureDate.format('YYYY-MM-DD HH:mm:ss');
 }
   
-// GENERATE 4-DIGIT RANDOM OTP CODE
+// GENERATE 5-DIGIT RANDOM OTP CODE
 exports.generateOtp = function() {
-	const otp = Math.floor(1000 + Math.random() * 9000);
+	const otp = Math.floor(10000 + Math.random() * 90000);
 	return otp
 };
 

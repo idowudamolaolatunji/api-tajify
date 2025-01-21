@@ -6,7 +6,9 @@ const cloudinary = require("../utils/cloudinary");
 const sharp = require("sharp");
 const Audio = require("../models/audioModel");
 const Comment = require("../models/commentModel");
-const UserProfile = require("../models/userProfilesModel");
+const Profile = require("../models/profile");
+const Podcast = require("../models/podcastModel");
+const { FirstCap } = require("../utils/helpers");
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -79,55 +81,77 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const tubeFile = req.files.tube[0];
     const thumbnailFile = req.files.thumbnail[0];
+    const { type, title, description, hashTags } = req.body;
 
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if(!creator) return res.json({ message: "Only creators can upload tube "});
     if(!tubeFile || !thumbnailFile) return res.json({ message: "Tube video and thumbnail are required!" })
 
-    const thumbnailSize = req.body.type == "tube-short" ? [720, 1280] : [1080, 1950];
-    const thumbnailBuffer = sharp(thumbnailFile.path)
-        .resize(...thumbnailSize)
-        .toFormat('jpeg')
-        .jpeg({ quality: 70 })
-    ;
-
-    const thumbnailPath = thumbnailBuffer.options.input.file;
-    const thumbnailUploadResult = await cloudinary.uploader.upload(thumbnailPath, {
-        resource_type: 'image',
-        public_id: Date.now()
+    // UPLOAD THE TUBE THUMBNAIL
+    const thumbnailFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(thumbnailFile.path, {
+            resource_type: 'image',
+            public_id: `tube-thumbnail-${Date.now()}`,
+            format: "jpeg",
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading tube thumbnail!`));
+            else resolve(result.public_id);
+        });
     });
 
-    if(!thumbnailUploadResult) {
-        console.log(err)
-        return res.status(500).json({ message: "Error Uploading Thumbnail" })
-    }
+    // CROP THE TUBE THUMBNAIL
+    const thumbnail_public_id = await thumbnailFileUpload;
+    const thumbnailCroppedUrl = await cloudinary.url(thumbnail_public_id, {
+        gravity: "auto",
+        width: type !== "tube-short" ? 1280 : 1080,
+        height: type !== "tube-short" ? 720 : 1950,
+        crop: "fill",
+        quality: 80
+    })
+    const thumbnailData = { url: thumbnailCroppedUrl, public_id: thumbnail_public_id }
 
-    const videoUploadResult = await cloudinary.uploader.upload(tubeFile.path, {
+    // UPLOAD THE TUBE VIDEO
+    const tubeFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(tubeFile.path, {
+            resource_type: 'video',
+            public_id: `tube-video-${Date.now()}`,
+            format: 'mp4',
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading tube video!`));
+            else resolve(result);
+        });
+    });
+
+    // CROP THE TUBE VIDEO
+    const tubeResult = await tubeFileUpload;
+    const tubeCroppedUrl = await cloudinary.url(tubeResult.public_id, {
+        width: type !== "tube-short" ? 1280 : 1080,
+        height: type !== "tube-short" ? 720 : 1950,
+        crop: "fill",
+        quality: 80,
         resource_type: 'video',
-        public_id: req.body.title
+        version: tubeResult.version,
     });
-
-    if(!videoUploadResult) {
-        console.log(err)
-        return res.status(500).json({ message: "Error Uploading Video" })
+    const tubeData = {
+        url: tubeCroppedUrl,
+        public_id: tubeResult.public_id,
+        duration_in_sec: tubeResult.duration
     }
-
-    const thumbnailUrl = thumbnailUploadResult.secure_url;
-    const videoUrl = videoUploadResult.secure_url;
 
     const tube = await Tube.create({
-        creator: userId,
-        thumbnailUrl, videoUrl,
-        ...req.body,
+        creatorProfile: creator._id,
+        video: tubeData,
+        thumbnail: thumbnailData,
+        title, description, type,
+        ...(hashTags && { hashTags: JSON.parse(hashTags) })
     });
 
-    res.status(200).json({
+    res.status(201).json({
         status: "success",
         message: "Tube Uploaded",
         data: { tube }
     });
 });
-
-
-
 
 
 
@@ -138,37 +162,55 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const audioFile = req.files.audio[0];
     const coverImageFile = req.files.coverImage[0];
+    const { title, description } = req.body;
 
-    if(!audioFile) return res.json({ message: "Music file not uploaded correctly!" })
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if(!creator) return res.json({ message: "Only creators can upload audio!" });
+    if(!audioFile || !coverImageFile) return res.json({ message: "Music file and cover image not uploaded correctly!" })
 
-    const audioUploadResult = await cloudinary.uploader.upload(audioFile.path, {
-        resource_type: 'video',
-        public_id: req.body.title
+    // UPLOAD THE AUDIO COVER IMAGE
+    const coverImageFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(coverImageFile.path, {
+            resource_type: 'image',
+            public_id: `audio-coverimage-${Date.now()}`,
+            format: "jpeg",
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading cover image!`));
+            else resolve(result.public_id);
+        });
     });
 
-    if(!audioUploadResult) {
-        return res.status(500).json({ message: "Error Uploading Audio" })
-    }
+    // CROP THE AUDIO COVER IMAGE
+    const coverImage_public_id = await coverImageFileUpload;
+    const coverImageCroppedUrl = await cloudinary.url(coverImage_public_id, {
+        gravity: "auto",
+        width: 500,
+        height: 500,
+        crop: "fill",
+        quality: 70
+    })
+    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id }
 
-    let coverImageUploadResult = "";
-    if(coverImageFile) {
-        coverImageUploadResult = await cloudinary.uploader.upload(coverImageFile.path, {
-            resource_type: 'image',
-            public_id: Date.now()
+    // UPLOAD THE AUDIO FILE
+    const audioFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(audioFile.path, {
+            resource_type: 'auto',
+            public_id: `audio-file-${Date.now()}`,
+            format: 'mp3'
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading audio!`));
+            else resolve({ audio_public_id: result.public_id, audioUrl: result.secure_url, duration_in_sec: result.duration });
         });
-    
-        if(!coverImageUploadResult) {
-            return res.status(500).json({ message: "Error Uploading Cover Image" })
-        }
-    }
+    });
 
-    const audioUrl = audioUploadResult.secure_url;
-    const coverImageUrl = coverImageUploadResult.secure_url;
+    const { audio_public_id, audioUrl, duration_in_sec } = await audioFileUpload;
+    const audioData = { url: audioUrl, public_id: audio_public_id, duration_in_sec }
 
     const audio = await Audio.create({
-        creator: userId,
-        audioUrl, coverImageUrl,
-        ...req.body,
+        creatorProfile: creator._id,
+        audio: audioData,
+        coverImage: coverImageData,
+        title, description,
     });
 
     res.status(201).json({
@@ -179,70 +221,100 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
 });
 
 
-
-
-
-
-
 //////////////////////////////////////////////////
-// PODCASTS AND RADIOS
+// PODCASTS
 //////////////////////////////////////////////////
-exports.getRadioStations = asyncWrapper(async function(req, res) {
-    const { location } = req.params;
 
-    const url = `https://nigeria-radio-stations.p.rapidapi.com/?category=${location}`;
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
-            'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
-        }
-    };
+exports.createPodcast = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const coverImageFile = req.file;
+    const { name, description } = req.body;
 
-	const response = await fetch(url, options);
-	const result = await response.text();
-	console.log(result);
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if(!creator) return res.json({ message: "Only creators can upload audio!" });
+    if(!coverImageFile) return res.json({ message: "Podcast cover image not uploaded correctly!" });
 
-    res.status(200).json({
-        status: "success",
-        data: {
-            radio_Stations: result
-        }
+    // UPLOAD THE AUDIO COVER IMAGE
+    const coverImageFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(coverImageFile.path, {
+            resource_type: 'image',
+            public_id: `podcast-coverimage-${Date.now()}`,
+            format: "jpeg",
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading cover image!`));
+            else resolve(result.public_id);
+        });
+    });
+
+    // CROP THE AUDIO COVER IMAGE
+    const coverImage_public_id = await coverImageFileUpload;
+    const coverImageCroppedUrl = await cloudinary.url(coverImage_public_id, {
+        gravity: "auto",
+        width: 500,
+        height: 500,
+        crop: "fill",
+        quality: 70
     })
+    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id }
 
-})
+    const podcast = await Podcast.create({
+        creatorProfile: creator._id,
+        name, description,
+        coverImage: coverImageData,
+        episodes: []
+    });
 
-
-exports.getRadioStationById = asyncWrapper(async function(req, res) {
-    const { id } = req.params;
-
-    const url = `https://nigeria-radio-stations.p.rapidapi.com/?id=${id}`;
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
-            'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
-        }
-    };
-
-	const response = await fetch(url, options);
-	const result = await response.text();
-	console.log(result);
-
-    res.status(200).json({
+    res.status(201).json({
         status: "success",
-        data: {
-            radio_Stations: result
-        }
-    })
-
+        message: "Podcast Uploaded",
+        data: { podcast }
+    });
 });
 
 
+exports.uploadEpisode = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const audioFile = req.files.audio[0];
+    const { id } = req.params;
+    const { title, description } = req.body;
+
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    const creator_podcast = await Podcast.findOne({ _id: id, creatorProfile: creator._id });
+    if(!creator) return res.json({ message: "Only creators can upload audio!" });
+    if(!audioFile) return res.json({ message: "Podcast audio file not uploaded correctly!" });
+    if(!creator_podcast) return res.json({ message: "Podcast cannot be found!" });
+
+    // UPLOAD THE AUDIO FILE
+    const audioFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(audioFile.path, {
+            resource_type: 'auto',
+            public_id: `podcast-episode-${Date.now()}`,
+            format: 'mp3'
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading audio!`));
+            else resolve({ public_id: result.public_id, url: result.secure_url, duration_in_sec: result.duration });
+        });
+    });
+
+    const { public_id, url, duration_in_sec } = await audioFileUpload;
+    const audioData = { url, public_id, duration_in_sec }
+    const episode = { title, description, audio: audioData,}
+
+    await Podcast.findOne(
+        { _id: creator_podcast._id },
+        { $set: {episodes: [...creator_podcast.episodes, episode]} },
+        { runValidators: true, new: true }
+    );
+
+    res.status(201).json({
+        status: "success",
+        message: `Episode: ${FirstCap(title)} Uploaded`,
+    });
+});
 
 
 //////////////////////////////////////////////////
-// COMMENTING AND LIKING POST
+// COMMENTING POST
 //////////////////////////////////////////////////
 
 exports.writeComment = asyncWrapper(async function(req, res) {
@@ -253,12 +325,11 @@ exports.writeComment = asyncWrapper(async function(req, res) {
         return res.json({ message: "Invalid request data" });
     }
   
-    const userProfile = await UserProfile.findOne({ user: userId });
+    const userProfile = await Profile.findOne({ user: userId });
     const newComment = await Comment.create({
-        userId,
         itemId,
         content,
-        userProfile,
+        userProfile: userProfile._id,
     });
 
     const post = await Tube.findOne({ _id: itemId })
@@ -283,11 +354,12 @@ exports.editComment = asyncWrapper(async function(req, res) {
     const { id } = req.params;
     const { content } = req.body;
 
-    const comment = await Comment.findOne({ id, userId });
+    const userProfile = await Profile.findOne({ user: userId });
+    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
     if(!comment) return res.json({ message: "Cannot find comment" });
     
     const editedComment = await Comment.updateOne(
-        { _id: comment.id }, { $set: { content } },
+        { _id: comment._id }, { $set: { content } },
         { runValidators: true, new: true }
     );
 
@@ -303,7 +375,8 @@ exports.deleteComment = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const { id } = req.params;
 
-    const comment = await Comment.findOne({ id, userId });
+    const userProfile = await Profile.findOne({ user: userId });
+    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
     if(!comment) return res.json({ message: "Cannot find comment" });
     await Comment.deleteOne({ _id: comment.id });
 
@@ -336,3 +409,69 @@ exports.getItemComments = asyncWrapper(async function(req, res) {
 
 exports.getAllComments = refactory.getAllPaginated(Comment, "comment");
 exports.getCommentById = refactory.getOne(Comment, "comment");
+
+
+
+
+//////////////////////////////////////////////////
+// RADIOS
+//////////////////////////////////////////////////
+// exports.getRadioStations = asyncWrapper(async function(req, res) {
+//     const { location } = req.params;
+
+//     const url = `https://nigeria-radio-stations.p.rapidapi.com/?category=${location}`;
+//     const options = {
+//         method: 'GET',
+//         headers: {
+//             'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
+//             'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
+//         }
+//     };
+
+// 	const response = await fetch(url, options);
+// 	const result = await response.text();
+// 	console.log(result);
+
+//     res.status(200).json({
+//         status: "success",
+//         data: {
+//             radio_Stations: result
+//         }
+//     })
+
+// })
+
+// exports.getRadioStationById = asyncWrapper(async function(req, res) {
+//     const { id } = req.params;
+
+//     const url = `https://nigeria-radio-stations.p.rapidapi.com/?id=${id}`;
+//     const options = {
+//         method: 'GET',
+//         headers: {
+//             'x-rapidapi-key': 'd8ca074fe6mshfe41dcf1b853aa9p182ccejsn9f5fff949d43',
+//             'x-rapidapi-host': 'nigeria-radio-stations.p.rapidapi.com'
+//         }
+//     };
+
+// 	const response = await fetch(url, options);
+// 	const result = await response.text();
+// 	console.log(result);
+
+//     res.status(200).json({
+//         status: "success",
+//         data: {
+//             radio_Stations: result
+//         }
+//     })
+
+// });
+
+
+
+//////////////////////////////////////////////////
+// LIKING AND UNLINKING
+//////////////////////////////////////////////////
+
+exports.likeTube = asyncWrapper(async function(req, res) {
+    
+})

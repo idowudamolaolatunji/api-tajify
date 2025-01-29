@@ -493,10 +493,14 @@ exports.getCommentById = refactory.getOne(Comment, "comment");
 
 // Create a audio book
  exports.createAudioBook = asyncWrapper(async function(req, res) {
-    const userId = req.user._id;
+    const userId = req.user ? req.user._id : req.body.userId;
     const coverImageFile = req.files.coverImage[0];
-    const audiobookFile = req.files.audiobook[0];
+    const audiobookFile = req.files.audioBook[0];
     const { title, description, author, genre } = req.body;
+
+    if(!userId) {
+        return res.status(400).json({ message: "User id is required" });
+    }
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload audio!" });
@@ -547,7 +551,8 @@ exports.getCommentById = refactory.getOne(Comment, "comment");
         title,
         description,
         author,
-        genre
+        genre,
+        userId
  });
 
     res.status(201).json({

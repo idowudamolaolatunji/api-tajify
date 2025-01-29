@@ -553,3 +553,49 @@ Upload an Ebook(protected)
 }
 
 ```
+
+**POST** `/api/channels/books/upload-audio`
+Upload an audiobook(protected)
+***Request Body***
+
+```json
+{
+  "title": "The Art of Coding",
+  "author": "Achebe",
+  "description": "A comprehensive guide to mastering programming",
+  "genre": "Programming / Education",
+  "userId": "678e0ddcabb0db93f3706e14",
+  "coverImage": {"File Object"},
+  "ebook": {"File Object"}
+}
+```
+
+***Response***
+```json
+{
+    "status": "success",
+    "message": "Book Uploaded",
+    "data": {
+        "book": {
+            "title": "\"The Art of Coding\"",
+            "author": "\"Achebe\"",
+            "description": "\"Acomprehensice guide to master programming\"",
+            "genre": "\"Programming / Education\"",
+            "userId": "678e0ddcabb0db93f3706e14",
+            "coverImage": {
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738140696215?_a=BAMCkGUq0",
+                "public_id": "book-coverimage-1738140696215"
+            },
+            "audiobook": {
+                "likes": 0,
+                "Stream": 0,
+                "slug": "\"the-art-of-coding\""
+            },
+            "_id": "6799ec20fa88ece86c398fea",
+            "createdAt": "2025-01-29T08:51:44.868Z",
+            "updatedAt": "2025-01-29T08:51:44.868Z",
+            "__v": 0
+        }
+    }
+}
+```

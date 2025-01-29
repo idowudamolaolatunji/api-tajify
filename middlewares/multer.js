@@ -49,5 +49,5 @@ exports.uploadEbook = upload.fields([
 
 exports.uploadAudioBook = upload.fields([
     { name: 'coverImage', maxCount: 1 }, // For the audiobook cover image
-    { name: 'audio', maxCount: 1 } // For the audio file
+    { name: 'audioBook', maxCount: 1 } // For the audio file
 ]);

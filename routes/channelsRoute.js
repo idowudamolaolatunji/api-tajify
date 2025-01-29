@@ -1,7 +1,7 @@
 const express = require('express');
 const channelsController = require('../controllers/channelsController');
 const { isAuthProtected, isRestricted } = require('../middlewares/protected');
-const { uploadSingleTube, uploadSingleAudio, uploadSingleImage } = require('../middlewares/multer');
+const { uploadSingleTube, uploadSingleAudio, uploadSingleImage, uploadEbook, uploadAudioBook } = require('../middlewares/multer');
 
 //////////////////////////////////////////////////
 //////////////////////////////////////////////////
@@ -22,8 +22,8 @@ router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsControll
 router.patch("/tubes/:id", isAuthProtected, channelsController.updateOneTubeById);
 router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeById);
 
-
-
+ 
+ 
 //////////////////////////////////////////////////
 // MUSIC
 //////////////////////////////////////////////////
@@ -50,5 +50,19 @@ router.post("/podcasts/episode/:id", uploadSingleAudio, isAuthProtected, channel
 router.patch("/podcasts/:id", isAuthProtected, channelsController.updateOnePodcastById);
 router.delete("/podcasts/:id", isAuthProtected, channelsController.deleteOnePodcastById);
 
+//////////////////////////////////////////////////
+////////BOOKS
+//////////////////////////////////////////////////
 
-module.exports = router;
+router.get("/books", isAuthProtected, isRestricted, channelsController.getAllBooks);
+router.get("/books/:id", channelsController.getOneBookById);
+router.get("/books/my-books", isAuthProtected, channelsController.getAllMyBooks);
+
+router.post("/books/upload", uploadEbook, isAuthProtected,  channelsController.createEBook);
+router.post("/books/upload-audio", uploadAudioBook, isAuthProtected, channelsController.createAudioBook);
+
+router.put("/books/:id", isAuthProtected, channelsController.updateOneBookById);
+router.delete("/books/:id", isAuthProtected, channelsController.deleteOneBookById);
+
+ 
+module.exports = router; 

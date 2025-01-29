@@ -30,7 +30,7 @@ const multerFilter = (_, file, cb) => {
 const upload = multer({
     storage: multerStorage,
     fileFilter: multerFilter,
-});
+}); 
 
 
 //////////////////////////////////////////////////
@@ -40,3 +40,14 @@ exports.uploadSingleImage = upload.single('image');
 
 exports.uploadSingleTube = upload.fields([{ name: 'tube', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]);
 exports.uploadSingleAudio = upload.fields([{ name: 'audio', maxCount: 1 }, { name: 'coverImage', maxCount: 1 }]);
+
+
+exports.uploadEbook = upload.fields([
+    { name: 'coverImage', maxCount: 1 }, // For the eBook cover image
+    { name: 'pdf', maxCount: 1 } // For the PDF eBook file
+]);
+
+exports.uploadAudioBook = upload.fields([
+    { name: 'coverImage', maxCount: 1 }, // For the audiobook cover image
+    { name: 'audio', maxCount: 1 } // For the audio file
+]);

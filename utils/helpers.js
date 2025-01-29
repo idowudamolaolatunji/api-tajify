@@ -1,19 +1,6 @@
 const moment = require("moment");
 const jwt = require("jsonwebtoken");
 
-// const verifyPayment = require("./verifyPayment");
-
-// // VERIFICATION RESPONSE
-// exports.getResponsedata = async function(reference) {
-//     const paymentVerification = await verifyPayment(reference);
-//     const response = paymentVerification.data.data;
-
-//     const amount = Number(response.amount) / 100;
-//     const status = paymentVerification.status;
-//     const paidAt = response.paidAt;
-//     return { amount, status, paidAt };
-// }
-
 // FORMAT NUMBER
 exports.formatNumber = function(amount) {
 	return Number(amount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");

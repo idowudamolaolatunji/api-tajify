@@ -5,10 +5,12 @@ const refactory = require("./handleRefactory");
 const cloudinary = require("../utils/cloudinary");
 const Audio = require("../models/audioModel");
 const Comment = require("../models/commentModel");
-const Profile = require("../models/profile");
+const Profile = require("../models/profile")
 const Podcast = require("../models/podcastModel");
 const { FirstCap } = require("../utils/helpers");
-const Book = require("../models/booksModel");
+const eBook = require("../models/ebookModel");
+const User = require("../models/usersModel");
+const Audiobook = require("../models/audioBookModel");
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -492,26 +494,97 @@ exports.getCommentById = refactory.getOne(Comment, "comment");
 ////////////////////////////////////////////////////
 
 // Create a audio book
- exports.createAudioBook = asyncWrapper(async function(req, res) {
+// exports.createAudioBook = asyncWrapper(async function(req, res) {
+//     const userId = req.user._id;
+//     const coverImageFile = req.files.coverImage?.[0];
+//     const audiobookFile = req.files.audioBook?.[0];
+//     const { title, description, author, genre } = req.body;
+
+//     if (!userId) {
+//         return res.status(400).json({ message: "User id is required" });
+//     }
+
+//     const creator = await Profile.findOne({ user: userId, isCreator: true });
+//     if (!creator) return res.status(403).json({ message: "Only creators can upload audio!" });
+//     if (!coverImageFile || !audiobookFile) return res.status(400).json({ message: "Book cover image and audiobook not uploaded correctly!" });
+
+//     // UPLOAD THE AUDIO COVER IMAGE
+//     const coverImageFileUpload = new Promise((resolve, reject) => {
+//         cloudinary.uploader.upload(coverImageFile.path, {
+//             resource_type: 'image',
+//             public_id: `book-coverimage-${Date.now()}`,
+//             format: "jpeg",
+//         }, function(err, result) {
+//             if (err) reject(new Error(`Error uploading cover image!`));
+//             else resolve(result.public_id);
+//         });
+//     });
+
+//     // CROP THE AUDIO COVER IMAGE
+//     const coverImage_public_id = await coverImageFileUpload;
+//     const coverImageCroppedUrl = await cloudinary.url(coverImage_public_id, {
+//         gravity: "auto",
+//         width: 500,
+//         height: 500,
+//         crop: "fill",
+//         quality: 70
+//     });
+//     const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id };
+
+//     // UPLOAD THE AUDIO FILE
+//     const audiobookFileUpload = new Promise((resolve, reject) => {
+//         cloudinary.uploader.upload(audiobookFile.path, {
+//             resource_type: 'video', // Needed for Cloudinary to support audio files
+//             public_id: `audiobook-file-${Date.now()}`,
+//         }, function(err, result) {
+//             if (err) reject(new Error(`Error uploading audiobook!`));
+//             else resolve({ public_id: result.public_id, url: result.secure_url, duration: result.duration });
+//         });
+//     });
+
+//     const { public_id, url, duration } = await audiobookFileUpload;
+    
+//     // Create Audiobook in the database
+//     const book = await Audiobook.create({
+//         creatorProfile: creator._id,
+//         fileUrl: url, // Fix: Use `fileUrl` field
+//         duration: duration, // Fix: Use `duration` field
+//         fileType: 'mp3', // Default file type
+//         coverImage: coverImageData,
+//         title,
+//         description,
+//         author,
+//         genre,
+//         userId
+//     });
+
+//     res.status(201).json({
+//         status: "success",
+//         message: "Book Uploaded",
+//         data: { book }
+//     });
+// });
+
+exports.createAudioBook = asyncWrapper(async function(req, res) {
     const userId = req.user ? req.user._id : req.body.userId;
     const coverImageFile = req.files.coverImage[0];
     const audiobookFile = req.files.audioBook[0];
     const { title, description, author, genre } = req.body;
 
-    if(!userId) {
+    if (!userId) {
         return res.status(400).json({ message: "User id is required" });
     }
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
-    if(!creator) return res.json({ message: "Only creators can upload audio!" });
-    if(!coverImageFile || !audiobookFile) return res.json({ message: "Book cover image and audiobook not uploaded correctly!" });
+    if (!creator) return res.json({ message: "Only creators can upload audio!" });
+    if (!coverImageFile || !audiobookFile) return res.json({ message: "Book cover image and audiobook not uploaded correctly!" });
 
     // UPLOAD THE AUDIO COVER IMAGE
     const coverImageFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(coverImageFile.path, {
             resource_type: 'image',
             public_id: `book-coverimage-${Date.now()}`,
-            format: "jpeg",
+            format: 'jpeg',
         }, function(err, result) {
             if (err) reject(new Error(`Error uploading cover image!`));
             else resolve(result.public_id);
@@ -526,34 +599,36 @@ exports.getCommentById = refactory.getOne(Comment, "comment");
         height: 500,
         crop: "fill",
         quality: 70
-    })
-    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id }
+    });
+    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id };
 
     // UPLOAD THE AUDIO FILE
     const audiobookFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(audiobookFile.path, {
-            resource_type: 'auto',
-            public_id: `audiobook-file-${Date.now()}`,
-            format: 'mp3'
+            resource_type: 'auto',  // Auto-detect the file type for the audiobook
+            public_id: `podcast-episode-${Date.now()}`,  // Dynamic public ID based on current timestamp
+            format: 'mp3'  // Ensure the format is mp3
         }, function(err, result) {
-            if (err) reject(new Error(`Error uploading audiobook!`));
-            else resolve({ public_id: result.public_id, url: result.secure_url, duration_in_sec: result.duration });
+            if (err) reject(new Error(`Error uploading audiobook!`));  // Handle error if upload fails
+            else resolve({ public_id: result.public_id, url: result.secure_url, duration_in_sec: result.duration });  // Return necessary details
         });
     });
 
     const { public_id, url, duration_in_sec } = await audiobookFileUpload;
-    const audiobookData = { url, public_id, duration_in_sec }
 
-    const book = await Book.create({
+    // Create Audiobook in the database
+    const book = await Audiobook.create({
         creatorProfile: creator._id,
-        audiobook: audiobookData,
+        fileUrl: url,  // File URL from Cloudinary
+        duration: duration_in_sec,  // Duration of the audiobook
+        fileType: 'mp3',  // File type of the audiobook
         coverImage: coverImageData,
         title,
         description,
         author,
         genre,
         userId
- });
+    });
 
     res.status(201).json({
         status: "success",
@@ -562,88 +637,83 @@ exports.getCommentById = refactory.getOne(Comment, "comment");
     });
 });
 
-
+ 
 // Create ebook
 exports.createEBook = asyncWrapper(async function(req, res) {
-    const userId = req.user ? req.user._id : req.body.userId;
+    const userId = req.user._id;
     const coverImageFile = req.files.coverImage?.[0];
-    const ebookFile = req.files.pdf[0];
+    const ebookFile = req.files.pdf?.[0]; // Ensure correct key
     const { title, description, author, genre } = req.body;
 
-    if(!userId) return res.status(401).json({ message: "User id is required" });
+    if (!userId) return res.status(401).json({ message: "User ID is required" });
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
-    if(!creator) return res.json({ message: "Only creators can upload Ebook!" });
-    if(!coverImageFile || !ebookFile) return res.json({ message: "Book cover image and ebook not uploaded correctly!" });
+    if (!creator) return res.status(403).json({ message: "Only creators can upload an Ebook!" });
+    if (!coverImageFile || !ebookFile) return res.status(400).json({ message: "Book cover image and ebook not uploaded correctly!" });
+
 
     // UPLOAD THE EBOOK COVER IMAGE
     const coverImageFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(coverImageFile.path, {
             resource_type: 'image',
-            public_id: `book-coverimage-${Date.now()}`, 
-          
+            public_id: `book-coverimage-${Date.now()}`,
         }, function(err, result) {
-            if (err) reject(new Error(`Error uploading cover image!`));
+            if (err) reject(new Error("Error uploading cover image!"));
             else resolve(result.public_id);
         });
     });
 
     // CROP THE EBOOK COVER IMAGE
     const coverImage_public_id = await coverImageFileUpload;
-    const coverImageCroppedUrl = await cloudinary.url(coverImage_public_id, {
+    const coverImageCroppedUrl = cloudinary.url(coverImage_public_id, {
         gravity: "auto",
         width: 500,
         height: 500,
         crop: "fill",
-        quality: 70
-    })
-    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id }
+        quality: 70,
+    });
 
-    // UPLOAD THE AUDIO FILE
+    const coverImageData = { url: coverImageCroppedUrl, public_id: coverImage_public_id };
+
+    // UPLOAD THE EBOOK FILE
     const ebookFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(ebookFile.path, {
-            resource_type: 'auto',
+            resource_type: 'raw', // Use 'raw' for PDFs
             public_id: `ebook-file-${Date.now()}`,
         }, function(err, result) {
-            if (err) reject(new Error(`Error uploading ebook!`));
+            if (err) reject(new Error("Error uploading ebook!"));
             else resolve({ public_id: result.public_id, url: result.secure_url });
         });
     });
 
     const { public_id, url } = await ebookFileUpload;
-    const ebookData = { url, public_id }
+    const ebookData = { fileUrl: url, fileType: "pdf", public_id };
 
-    const book = await Book.create({
+    // SAVE TO DATABASE
+    const book = await eBook.create({
         creatorProfile: creator._id,
-        ebook: ebookData,
         coverImage: coverImageData,
+        fileUrl: ebookData.fileUrl, // Correct field name
+        fileType: ebookData.fileType, // Specify file type
         title,
         description,
         author,
         genre,
-        userId
- });
+        userId,
+    });
 
     res.status(201).json({
         status: "success",
-        message: "Book Uploaded",
-        data: { book }
+        message: "Ebook uploaded successfully",
+        data: { book },
     });
 });
 
-// Get all books
-exports.getAllBooks = asyncWrapper(async function(req, res) {
-    const books = await Book.find();
-    res.status(200).json({
-        status: "success",
-        data: { books }
-    });
-});
 
 // Get one book by id
-exports.getOneBookById = asyncWrapper(async function(req, res) {
+exports.getAudioBookById = asyncWrapper(async function(req, res) {
     const { id } = req.params;
-    const book = await Book.findOne({ _id: id });  
+    const book = await Audiobook.findOne({ _id: id });  
     if (!book) {
         return res.status(404).json({
             status: "fail",
@@ -652,24 +722,60 @@ exports.getOneBookById = asyncWrapper(async function(req, res) {
     }
  
     res.status(200).json({
-        status: "success",
+        status: "success", 
         data: { book }
     });     
 });
+// Get one book by id
+exports.getEBookById = asyncWrapper(async function(req, res) {
+    const { id } = req.params;
+    const book = await eBook.findOne({ _id: id });  
+    if (!book) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Book not found",
+        });
+    }
+    res.status(200).json({
+        status: "success",
+        data: { book }
+    });  
+
+    });
 
 // Update a book(only the creator can update)   
-exports.updateBook = asyncWrapper(async function(req, res) {
+exports.updateEBook = asyncWrapper(async function (req, res) {
     const userId = req.user._id;
     const { id } = req.params;
     const { title, author, description, genre } = req.body;
 
+    // Find the creator's profile
     const creator = await Profile.findOne({ user: userId, isCreator: true });
-    if(!creator) return res.json({ message: "Only creators can update book" });
-    const book = await Book.findOne({ _id: id, creatorProfile: creator._id });
-    if(!book) return res.json({ message: "Cannot find book" });
+    if (!creator) {
+        return res.status(403).json({ message: "Only creators can update books" });
+    }
 
-    const updatedBook = await Book.updateOne(
-        { _id: book._id }, { $set: { title, author, description, genre } },
+    console.log("Looking for book with ID:", id);
+    console.log("Expecting creatorProfile:", creator._id);
+
+    // Find the book
+    const book = await eBook.findOne({ _id: id });
+    if (!book) {
+        return res.status(404).json({ message: "Cannot find book" });
+    }
+
+    console.log("Found book:", book);
+    console.log("Book's creatorProfile:", book.creatorProfile);
+
+    // Check if the user is the creator of the book
+    if (!book.creatorProfile.equals(creator._id)) {
+        return res.status(403).json({ message: "You are not the creator of this book" });
+    }
+
+    // Update the book
+    const updatedBook = await eBook.findOneAndUpdate(
+        { _id: book._id },
+        { title, author, description, genre },
         { runValidators: true, new: true }
     );
 
@@ -679,17 +785,60 @@ exports.updateBook = asyncWrapper(async function(req, res) {
         data: { book: updatedBook }
     });
 });
-//delete a book
-exports.deleteBook = asyncWrapper(async function(req, res) {
+    // Update a book(only the creator can update)   
+exports.updateAudioBook = asyncWrapper(async function (req, res) {
     const userId = req.user._id;
+    const { id } = req.params;
+    const { title, author, description, genre } = req.body;
+ 
+    // Find the creator's profile
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if (!creator) {
+        return res.status(403).json({ message: "Only creators can update books" });
+    }
+
+    console.log("Looking for book with ID:", id);
+    console.log("Expecting creatorProfile:", creator._id);
+
+    // Find the book
+    const book = await Audiobook.findOne({ _id: id });
+    if (!book) {
+        return res.status(404).json({ message: "Cannot find book" });
+    }
+
+    console.log("Found book:", book);
+    console.log("Book's creatorProfile:", book.creatorProfile);
+
+    // Check if the user is the creator of the book
+    if (!book.creatorProfile.equals(creator._id)) {
+        return res.status(403).json({ message: "You are not the creator of this book" });
+    }
+
+    // Update the book
+    const updatedBook = await Audiobook.findOneAndUpdate(
+        { _id: book._id },
+        { title, author, description, genre },
+        { runValidators: true, new: true }
+    );
+
+    res.status(200).json({
+        status: "success",
+        message: "Book Updated",
+        data: { book: updatedBook }
+    });
+});
+
+//delete a book
+exports.deleteEBook = asyncWrapper(async function(req, res) {
+     const userId = req.user._id;
     const { id } = req.params;
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can delete book" });
-    const book = await Book.findOne({ _id: id, creatorProfile: creator._id });
+    const book = await eBook.findOne({ _id: id, creatorProfile: creator._id });
     if(!book) return res.json({ message: "Cannot find book" });
 
-    await Book.deleteOne({ _id: book.id });
+    await eBook.deleteOne({ _id: book.id });
 
     res.status(200).json({
         status: "success",
@@ -698,8 +847,26 @@ exports.deleteBook = asyncWrapper(async function(req, res) {
     });
 });
 
-exports.getAllBooks = refactory.getAll(Book, "book");
-exports.getAllMyBooks = refactory.getAllMine(Book, "book");
-exports.getOneBookById = refactory.getOne(Book, "book");
-exports.updateOneBookById = refactory.updateOne(Book, "book");
-exports.deleteOneBookById = refactory.updateOne(Book, "book");
+//delete an audiobook
+exports.deleteAudioBook = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+   const { id } = req.params;
+
+   const creator = await Profile.findOne({ user: userId, isCreator: true });
+   if(!creator) return res.json({ message: "Only creators can delete book" });
+   const book = await Audiobook.findOne({ _id: id, creatorProfile: creator._id });
+   if(!book) return res.json({ message: "Cannot find book" });
+
+   await Audiobook.deleteOne({ _id: book.id });
+
+   res.status(200).json({
+       status: "success",
+       message: "Book Deleted",
+       data: null
+   });
+});
+
+exports.getAllAudioBooks = refactory.getAll(Audiobook, "audioBooks");
+exports.getAllMyAudioBooks = refactory.getAllMine(Audiobook, "audioBooks");
+exports.getAllEBooks = refactory.getAll(eBook, "eBooks");
+exports.getAllMyEBooks = refactory.getAllMine(eBook, "eBooks");

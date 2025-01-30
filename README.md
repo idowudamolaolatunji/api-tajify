@@ -510,7 +510,7 @@ or
 ### Image - Books
 **POST** `/api/channels/books/upload`
 Upload an Ebook(protected)
-***Request Body***
+**Request Body**
 
 ```json
 {
@@ -523,40 +523,41 @@ Upload an Ebook(protected)
   "ebook": {"File Object"}
 }
 
+
 ```
-***Response**
+**Response**
 ```json
 {
-  "status": "success",
-  "message": "Book Uploaded",
-  "data": {
-    "book": {
-      "title": "The Art of Coding",
-      "author": "Berula",
-      "description": "A comprehensive guide to mastering programming",
-      "genre": "Programming / Education",
-      "userId": "678e0ddcabb0db93f3706e14",
-      "coverImage": {
-        "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738137001535?_a=BAMCkGUq0",
-        "public_id": "book-coverimage-1738137001535"
-      },
-      "ebook": {
-        "url": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1616581234/ebooks/ebook-file-1738137001535.pdf",
-        "public_id": "ebook-file-1738137001535"
-      },
-      "_id": "6799ddb3f94afad823b0d438",
-      "createdAt": "2025-01-29T07:50:11.406Z",
-      "updatedAt": "2025-01-29T07:50:11.406Z",
-      "__v": 0
+    "status": "success",
+    "message": "Ebook uploaded successfully",
+    "data": {
+        "book": {
+            "title": "\"The Art of Coding\"",
+            "author": "\"Shapale\"",
+            "description": "\"A comprehensive guide to master programming\"",
+            "genre": "\"Programming / Education\"",
+            "userId": "678e0ddcabb0db93f3706e14",
+            "creatorProfile": "678e0e14abb0db93f3706e18",
+            "coverImage": {
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738248376674?_a=BAMCkGUq0",
+                "public_id": "book-coverimage-1738248376674"
+            },
+            "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738248390/ebook-file-1738248389766",
+            "fileType": "pdf",
+            "likes": 0,
+            "_id": "679b90c68efe5d91903f0624",
+            "createdAt": "2025-01-30T14:46:30.490Z",
+            "updatedAt": "2025-01-30T14:46:30.490Z",
+            "slug": "\"the-art-of-coding\"",
+            "__v": 0
+        }
     }
-  }
 }
-
 ```
 
 **POST** `/api/channels/books/upload-audio`
 Upload an audiobook(protected)
-***Request Body***
+**Request Body**
 
 ```json
 {
@@ -570,7 +571,8 @@ Upload an audiobook(protected)
 }
 ```
 
-***Response***
+
+**Response**
 ```json
 {
     "status": "success",
@@ -582,20 +584,32 @@ Upload an audiobook(protected)
             "description": "\"Acomprehensice guide to master programming\"",
             "genre": "\"Programming / Education\"",
             "userId": "678e0ddcabb0db93f3706e14",
+            "creatorProfile": "678e0e14abb0db93f3706e18",
             "coverImage": {
-                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738140696215?_a=BAMCkGUq0",
-                "public_id": "book-coverimage-1738140696215"
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738254022984?_a=BAMCkGUq0",
+                "public_id": "book-coverimage-1738254022984"
             },
-            "audiobook": {
-                "likes": 0,
-                "Stream": 0,
-                "slug": "\"the-art-of-coding\""
-            },
-            "_id": "6799ec20fa88ece86c398fea",
-            "createdAt": "2025-01-29T08:51:44.868Z",
-            "updatedAt": "2025-01-29T08:51:44.868Z",
+            "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738254035/podcast-episode-1738254033665.mp3",
+            "duration": 7.288163,
+            "fileType": "mp3",
+            "stream": 0,
+            "likes": 0,
+            "_id": "679ba6d5f4509ca2dcfce427",
+            "createdAt": "2025-01-30T16:20:37.232Z",
+            "updatedAt": "2025-01-30T16:20:37.232Z",
+            "slug": "\"the-art-of-coding\"",
             "__v": 0
         }
     }
-}
-```
+}```
+
+-    **PATCH** `/api/channels/books/{id}`
+    Updates an existing podcasts by Id. (protected)
+
+-    **DELETE** `/api/channels/books/{id}`
+    Deletes a podcasts by Id. (protected)
+
+
+
+
+

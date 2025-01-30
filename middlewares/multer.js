@@ -51,3 +51,4 @@ exports.uploadAudioBook = upload.fields([
     { name: 'coverImage', maxCount: 1 }, // For the audiobook cover image
     { name: 'audioBook', maxCount: 1 } // For the audio file
 ]);
+ 

@@ -50,19 +50,23 @@ router.post("/podcasts/episode/:id", uploadSingleAudio, isAuthProtected, channel
 router.patch("/podcasts/:id", isAuthProtected, channelsController.updateOnePodcastById);
 router.delete("/podcasts/:id", isAuthProtected, channelsController.deleteOnePodcastById);
 
-//////////////////////////////////////////////////
+////////////////////////////////////////////////// 
 ////////BOOKS
 //////////////////////////////////////////////////
-
-router.get("/books", isAuthProtected, isRestricted, channelsController.getAllBooks);
+router.get("/audiobooks", isAuthProtected, isRestricted, channelsController.getAllAudioBooks);
+router.get("/ebook", isAuthProtected, channelsController.getAllEBooks)
 router.get("/books/:id", channelsController.getOneBookById);
-router.get("/books/my-books", isAuthProtected, channelsController.getAllMyBooks);
+router.get("/books/my-audiobooks", isAuthProtected, channelsController.getAllMyAudioBooks);
+router.get("books/my-ebooks", isAuthProtected, channelsController.getAllMyEBooks);
 
 router.post("/books/upload", uploadEbook, isAuthProtected,  channelsController.createEBook);
 router.post("/books/upload-audio", uploadAudioBook, isAuthProtected, channelsController.createAudioBook);
 
-router.put("/books/:id", isAuthProtected, channelsController.updateOneBookById);
-router.delete("/books/:id", isAuthProtected, channelsController.deleteOneBookById);
+router.patch("/ebook/:id", isAuthProtected, channelsController.updateEBook);
+router.patch("/audiobook/:id", isAuthProtected, channelsController.updateAudioBook);
 
+router.delete("/books/:id", isAuthProtected, channelsController.deleteEBook);
+router.delete("/books.:id", isAuthProtected, channelsController.deleteAudioBook)
+ 
  
 module.exports = router; 

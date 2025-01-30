@@ -731,7 +731,7 @@ exports.getOneBookById = asyncWrapper(async function(req, res) {
 exports.updateEBook = asyncWrapper(async function (req, res) {
     const userId = req.user._id;
     const { id } = req.params;
-    const { title, author, description, genre,likes } = req.body;
+    const { title, author, description, genre } = req.body;
 
     // Find the creator's profile
     const creator = await Profile.findOne({ user: userId, isCreator: true });
@@ -757,7 +757,7 @@ exports.updateEBook = asyncWrapper(async function (req, res) {
     }
 
     // Update the book
-    const updatedBook = await Book.findOneAndUpdate(
+    const updatedBook = await eBook.findOneAndUpdate(
         { _id: book._id },
         { title, author, description, genre },
         { runValidators: true, new: true }
@@ -768,12 +768,13 @@ exports.updateEBook = asyncWrapper(async function (req, res) {
         message: "Book Updated",
         data: { book: updatedBook }
     });
+});
     // Update a book(only the creator can update)   
 exports.updateAudioBook = asyncWrapper(async function (req, res) {
     const userId = req.user._id;
     const { id } = req.params;
     const { title, author, description, genre } = req.body;
-
+ 
     // Find the creator's profile
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if (!creator) {
@@ -798,7 +799,7 @@ exports.updateAudioBook = asyncWrapper(async function (req, res) {
     }
 
     // Update the book
-    const updatedBook = await Book.findOneAndUpdate(
+    const updatedBook = await Audiobook.findOneAndUpdate(
         { _id: book._id },
         { title, author, description, genre },
         { runValidators: true, new: true }
@@ -848,7 +849,6 @@ exports.deleteAudioBook = asyncWrapper(async function(req, res) {
        data: null
    });
 });
-})
 
 exports.getAllAudioBooks = refactory.getAll(Audiobook, "audioBooks");
 exports.getAllMyAudioBooks = refactory.getAllMine(Audiobook, "audioBooks");

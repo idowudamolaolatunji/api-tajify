@@ -4,7 +4,7 @@ const refactory = require("./handleRefactory");
 
 
 exports.getAllUserWallets = refactory.getAll(Wallet, "wallet");
-exports.createUserWallet = refactory.createOne(Wallet, "wallet", "user");
+exports.createUserWallet = refactory.createOne(Wallet, "wallet", "profile");
 exports.deleteUserWallet = refactory.deleteOne(Wallet, "wallet");
 
 // GET CURRENT USER WALLET

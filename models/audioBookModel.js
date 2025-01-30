@@ -2,27 +2,27 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 
 const audiobookSchema = new mongoose.Schema({
-    title: {
-         type: String,
+     title: {
+          type: String,
           required: true,
-           trim: true
-         },
-    author: {
-         type: String,
-          required: true,
-           trim: true
-         },
-    description: { 
-        type: String,
-         trim: true
-         },
-    publishedYear: {
-        type: Number
-     },
-    genre: {
-         type: String,
           trim: true
-         },
+     },
+     author: {
+          type: String,
+          required: true,
+          trim: true
+     },
+     description: { 
+          type: String,
+          trim: true
+     },
+     publishedYear: {
+          type: Number
+     },
+     genre: {
+          type: String,
+          trim: true
+     },
     userId: {
          type: mongoose.Schema.Types.ObjectId,
           ref: 'User',

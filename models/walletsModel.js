@@ -6,9 +6,9 @@ const mongoose = require('mongoose');
 //////////////////////////////////////////////
 
 const walletSchema = new mongoose.Schema({
-    user: {
+    profile: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "Profile",
         required: true,
         unique: true,
     },
@@ -37,7 +37,7 @@ const walletSchema = new mongoose.Schema({
 
 walletSchema.pre(/^find/, function (next) {
 	this.populate({
-		path: "user",
+		path: "profile",
 		select: "_id username",
 	});
 

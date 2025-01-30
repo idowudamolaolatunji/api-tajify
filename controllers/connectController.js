@@ -1,5 +1,5 @@
 const Call = require("../models/callModel")
-const Profile = require('../models/profile');
+const Profile = require('../models/profileModel');
 const Message = require("../models/messageModel")
 const { asyncWrapper } = require("../utils/handlers")
 

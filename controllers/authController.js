@@ -5,7 +5,7 @@ const User = require('../models/usersModel');
 const { asyncWrapper } = require('../utils/handlers');
 const { generateOtp, signToken } = require('../utils/helpers');
 const sendEmail = require('../utils/sendEmail');
-const Profile = require("../models/profile");
+const Profile = require("../models/profileModel");
 
 
 

@@ -5,7 +5,7 @@ const refactory = require("./handleRefactory");
 const cloudinary = require("../utils/cloudinary");
 const Audio = require("../models/audioModel");
 const Comment = require("../models/commentModel");
-const Profile = require("../models/profile")
+const Profile = require("../models/profileModel")
 const Podcast = require("../models/podcastModel");
 const { FirstCap } = require("../utils/helpers");
 const eBook = require("../models/ebookModel");
@@ -20,7 +20,7 @@ const Audiobook = require("../models/audioBookModel");
 // VIDEOS AND TUBES
 //////////////////////////////////////////////////
 exports.getAllTubes = refactory.getAll(Tube, "tube");
-exports.getAllMyTubes = refactory.getAllMine(Tube, "tube");
+exports.getAllMyTubes = refactory.getAllMine(Tube, "tube", "creatorProfile");
 exports.getOneTubeById = refactory.getOne(Tube, "tube");
 exports.updateOneTubeById = refactory.updateOne(Tube, "tube");
 exports.deleteOneTubeById = refactory.updateOne(Tube, "tube");
@@ -220,7 +220,7 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
 });
 
 exports.getAllMusic = refactory.getAll(Audio, "music");
-exports.getAllMyMusic = refactory.getAllMine(Audio, "music");
+exports.getAllMyMusic = refactory.getAllMine(Audio, "music", "creatorProfile");
 exports.getOneMusicById = refactory.getOne(Audio, "music");
 exports.updateOneMusicById = refactory.updateOne(Audio, "music");
 exports.deleteOneMusicById = refactory.updateOne(Audio, "music");
@@ -318,10 +318,10 @@ exports.uploadEpisode = asyncWrapper(async function(req, res) {
 
 
 exports.getAllPodcasts = refactory.getAll(Podcast, "podcast");
-exports.getAllMyPodcasts = refactory.getAllMine(Podcast, "podcast");
 exports.getOnePodcastById = refactory.getOne(Podcast, "podcast");
 exports.updateOnePodcastById = refactory.updateOne(Podcast, "podcast");
 exports.deleteOnePodcastById = refactory.updateOne(Podcast, "podcast");
+exports.getAllMyPodcasts = refactory.getAllMine(Podcast, "podcast", "creatorProfile");
 
 
 //////////////////////////////////////////////////
@@ -740,8 +740,7 @@ exports.getEBookById = asyncWrapper(async function(req, res) {
         status: "success",
         data: { book }
     });  
-
-    });
+});
 
 // Update a book(only the creator can update)   
 exports.updateEBook = asyncWrapper(async function (req, res) {
@@ -830,7 +829,7 @@ exports.updateAudioBook = asyncWrapper(async function (req, res) {
 
 //delete a book
 exports.deleteEBook = asyncWrapper(async function(req, res) {
-     const userId = req.user._id;
+    const userId = req.user._id;
     const { id } = req.params;
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
@@ -867,6 +866,6 @@ exports.deleteAudioBook = asyncWrapper(async function(req, res) {
 });
 
 exports.getAllAudioBooks = refactory.getAll(Audiobook, "audioBooks");
-exports.getAllMyAudioBooks = refactory.getAllMine(Audiobook, "audioBooks");
 exports.getAllEBooks = refactory.getAll(eBook, "eBooks");
 exports.getAllMyEBooks = refactory.getAllMine(eBook, "eBooks");
+exports.getAllMyAudioBooks = refactory.getAllMine(Audiobook, "audioBooks", "creatorProfile");

@@ -1,3 +1,4 @@
+const Profile = require("../models/profileModel");
 const { asyncWrapper } = require("../utils/handlers");
 const { FirstCap } = require("../utils/helpers");
 
@@ -69,13 +70,14 @@ exports.getAll = function(Model, title) {
 }
 
 
-exports.getAllMine = function(Model, title) {
+exports.getAllMine = function(Model, title, queryField) {
     return asyncWrapper(async function(req, res) {
         const userId = req.user._id;
+        const profile = await Profile.findOne({ user: userId });
         const docTitle = `${title}s`
         
         const myDocuments = await Model.find({
-            creator: userId
+            [queryField]: profile._id
         }).sort({ createAt: -1 });
 
         if(!myDocuments || myDocuments.length < 1) {
@@ -108,12 +110,13 @@ exports.getOne = function(Model, title) {
 }
 
 
-exports.createOne = function(Model, title, ownerTitle) {
+exports.createOne = function(Model, title, queryField) {
     return asyncWrapper(async function(req, res) {
         const userId = req.user._id;
+        const profile = await Profile.findOne({ user: userId });
 
         const document = await Model.create({
-            [ownerTitle]: userId,
+            [queryField]: profile._id,
             ...req.body
         });
 

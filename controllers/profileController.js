@@ -1,5 +1,5 @@
 const Notification = require("../models/notificationModel");
-const Profile = require("../models/profile");
+const Profile = require("../models/profileModel");
 const { asyncWrapper } = require("../utils/handlers");
 const { filterObj, formatDate, countNum } = require("../utils/helpers");
 const refactory = require("./handleRefactory");

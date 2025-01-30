@@ -53,9 +53,10 @@ router.delete("/podcasts/:id", isAuthProtected, channelsController.deleteOnePodc
 ////////////////////////////////////////////////// 
 ////////BOOKS
 //////////////////////////////////////////////////
-router.get("/audiobooks", isAuthProtected, isRestricted, channelsController.getAllAudioBooks);
-router.get("/ebook", isAuthProtected, channelsController.getAllEBooks);
-router.get("/books/:id", channelsController.getOneBookById);
+router.get("/audiobooks", isAuthProtected, channelsController.getAllAudioBooks);
+router.get("/ebooks", isAuthProtected, channelsController.getAllEBooks);
+router.get("/audiobook/:id",isAuthProtected, channelsController.getAudioBookById);
+router.get("/ebook/:id", isAuthProtected, channelsController.getEBookById);
 router.get("/books/my-audiobooks", isAuthProtected, channelsController.getAllMyAudioBooks);
 router.get("/books/my-ebooks", isAuthProtected, channelsController.getAllMyEBooks);
 

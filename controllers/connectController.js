@@ -34,7 +34,12 @@ exports.createCall = asyncWrapper(async (req, res) => {
         });
     }
 
-    const newCall = await Call.create({ caller, receiver, callType });
+    const newCall = await Call.create({ 
+        caller,
+        receiver,
+        callType
+        
+         });
 
     res.status(201).json({
         success: true,

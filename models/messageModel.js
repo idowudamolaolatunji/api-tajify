@@ -44,7 +44,7 @@ messageSchema.pre(/^find/, function (next) {
         select: "_id username",
     });
     next();
-});
+}); 
 
 const Message = mongoose.model("Message", messageSchema);
 module.exports = Message;

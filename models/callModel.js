@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const slugify = require('slugify');
 
 const callSchema = new mongoose.Schema({
     caller: {
@@ -19,13 +18,17 @@ const callSchema = new mongoose.Schema({
     callAccepted: {
         type: Boolean,
         default: false
+    },
+    callSlug: {
+        type: String,
+        unique: true
     }
 }, { timestamps: true });
 
 // Slugify the Call ID
 callSchema.pre("save", function (next) {
     if (this.isNew) {
-        this.callSlug = slugify(`${this.caller}-${this.receiver}-${this.callType}-${Date.now()}`, { lower: true });
+        this.callSlug = `${this.caller}-${this.receiver}-${Date.now()}`;
     }
     next();
 });

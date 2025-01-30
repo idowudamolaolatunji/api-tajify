@@ -79,7 +79,7 @@ exports.getAllMine = function(Model, title) {
         }).sort({ createAt: -1 });
 
         if(!myDocuments || myDocuments.length < 1) {
-            res.json({ message: `No ${title} found!` });
+           return res.json({ message: `No ${title} found!` });
         }
 
         res.status(200).json({

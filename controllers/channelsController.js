@@ -711,9 +711,9 @@ exports.createEBook = asyncWrapper(async function(req, res) {
 
 
 // Get one book by id
-exports.getOneBookById = asyncWrapper(async function(req, res) {
+exports.getAudioBookById = asyncWrapper(async function(req, res) {
     const { id } = req.params;
-    const book = await Book.findOne({ _id: id });  
+    const book = await Audiobook.findOne({ _id: id });  
     if (!book) {
         return res.status(404).json({
             status: "fail",
@@ -722,10 +722,26 @@ exports.getOneBookById = asyncWrapper(async function(req, res) {
     }
  
     res.status(200).json({
-        status: "success",
+        status: "success", 
         data: { book }
     });     
 });
+// Get one book by id
+exports.getEBookById = asyncWrapper(async function(req, res) {
+    const { id } = req.params;
+    const book = await eBook.findOne({ _id: id });  
+    if (!book) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Book not found",
+        });
+    }
+    res.status(200).json({
+        status: "success",
+        data: { book }
+    });  
+
+    });
 
 // Update a book(only the creator can update)   
 exports.updateEBook = asyncWrapper(async function (req, res) {

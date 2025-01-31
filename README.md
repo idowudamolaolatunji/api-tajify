@@ -514,7 +514,7 @@ Upload an Ebook(protected)
 
 ```json
 {
-  "title": "The Art of Coding",
+  "title": "The Art of Programming",
   "author": "Berula",
   "description": "A comprehensive guide to mastering programming",
   "genre": "Programming / Education",
@@ -532,23 +532,28 @@ Upload an Ebook(protected)
     "message": "Ebook uploaded successfully",
     "data": {
         "book": {
-            "title": "\"The Art of Coding\"",
-            "author": "\"Shapale\"",
-            "description": "\"A comprehensive guide to master programming\"",
-            "genre": "\"Programming / Education\"",
-            "userId": "678e0ddcabb0db93f3706e14",
+            "title": "\"The Art of Programming\"",
+            "specification": {
+                "author": "\"Shapale\"",
+                "description": "\"A comprehensive guide to master programming\"",
+                "genre": [
+                    "\"Programming / Education\""
+                ]
+            },
             "creatorProfile": "678e0e14abb0db93f3706e18",
             "coverImage": {
-                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738248376674?_a=BAMCkGUq0",
-                "public_id": "book-coverimage-1738248376674"
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-cover-1738324880584?_a=BAMCkGUq0",
+                "public_id": "book-cover-1738324880584"
             },
-            "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738248390/ebook-file-1738248389766",
-            "fileType": "pdf",
+            "url": {
+                "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738324886/ebook-file-1738324885021",
+                "fileType": "pdf"
+            },
             "likes": 0,
-            "_id": "679b90c68efe5d91903f0624",
-            "createdAt": "2025-01-30T14:46:30.490Z",
-            "updatedAt": "2025-01-30T14:46:30.490Z",
-            "slug": "\"the-art-of-coding\"",
+            "_id": "679cbb966ed9204a2696f5e9",
+            "createdAt": "2025-01-31T12:01:26.611Z",
+            "updatedAt": "2025-01-31T12:01:26.611Z",
+            "slug": "\"the-art-of-programming\"",
             "__v": 0
         }
     }
@@ -561,9 +566,9 @@ Upload an audiobook(protected)
 
 ```json
 {
-  "title": "The Art of Coding",
+  "title": "Javascript mastery",
   "author": "Achebe",
-  "description": "A comprehensive guide to mastering programming",
+  "description": "A comprehensive guide for programming",
   "genre": "Programming / Education",
   "userId": "678e0ddcabb0db93f3706e14",
   "coverImage": {"File Object"},
@@ -575,29 +580,33 @@ Upload an audiobook(protected)
 **Response**
 ```json
 {
-    "status": "success",
-    "message": "Book Uploaded",
+    "success": true,
+    "message": "Audiobook uploaded successfully",
     "data": {
         "book": {
-            "title": "\"The Art of Coding\"",
-            "author": "\"Achebe\"",
-            "description": "\"Acomprehensice guide to master programming\"",
-            "genre": "\"Programming / Education\"",
-            "userId": "678e0ddcabb0db93f3706e14",
             "creatorProfile": "678e0e14abb0db93f3706e18",
+            "title": "\"Javascript mastery\"",
+            "userId": "678e0ddcabb0db93f3706e14",
             "coverImage": {
-                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738254022984?_a=BAMCkGUq0",
-                "public_id": "book-coverimage-1738254022984"
+                "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738323065135?_a=BAMCkGUq0",
+                "public_id": "book-coverimage-1738323065135"
             },
-            "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738254035/podcast-episode-1738254033665.mp3",
-            "duration": 7.288163,
-            "fileType": "mp3",
+            "specification": {
+                "author": "\"Achebe\"",
+                "description": "\"A comprehensive guide for programming\"",
+                "genre": "\"Programming / Education\""
+            },
+            "audio": {
+                "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738323069/podcast-episode-1738323065163.mp3",
+                "duration": 7.288163,
+                "fileType": "mp3"
+            },
             "stream": 0,
             "likes": 0,
-            "_id": "679ba6d5f4509ca2dcfce427",
-            "createdAt": "2025-01-30T16:20:37.232Z",
-            "updatedAt": "2025-01-30T16:20:37.232Z",
-            "slug": "\"the-art-of-coding\"",
+            "_id": "679cb480f74a7553a7c38011",
+            "createdAt": "2025-01-31T11:31:12.426Z",
+            "updatedAt": "2025-01-31T11:31:12.426Z",
+            "slug": "\"javascript-mastery\"",
             "__v": 0
         }
     }

@@ -2,52 +2,61 @@ const mongoose = require('mongoose');
 const slugify = require('slugify');
 
 const audiobookSchema = new mongoose.Schema({
+     creatorProfile: {
+          type: mongoose.Schema.Types.ObjectId,
+           ref: 'Profile'
+          },
     title: {
          type: String,
           required: true,
            trim: true
-         },
-    author: {
-         type: String,
-          required: true,
-           trim: true
-         },
-    description: { 
-        type: String,
-         trim: true
-         },
-    publishedYear: {
-        type: Number
-     },
-    genre: {
-         type: String,
-          trim: true
          },
     userId: {
          type: mongoose.Schema.Types.ObjectId,
           ref: 'User',
            required: true 
         },
-    creatorProfile: {
-         type: mongoose.Schema.Types.ObjectId,
-          ref: 'Profile'
-         },
+    
     coverImage: {
         url: { type: String, required: true },
         public_id: String,
     },
-    fileUrl: {
-         type: String,
-         required: true,
+    
+    specification: {
+
+     author: {
+          type: String,
+           required: true,
+            trim: true
+          },
+     description: { 
+         type: mongoose.Schema.Types.Mixed,
           trim: true
-         }, 
-    duration: {
+          },
+     publishedYear: {
          type: Number
-         }, // Duration in seconds
-    fileType: {
-         type: String,
-         trim: true
-         }, // Example: 'mp3', 'wav'
+      },
+     genre: {
+          type: [String],
+           trim: true
+          },
+      },
+      url: {
+          
+    fileUrl: {
+     type: String,
+     required: true,
+      trim: true 
+     }, 
+duration: {
+     type: Number
+     }, // Duration in seconds
+fileType: {
+     type: String,
+     trim: true
+     },
+
+      },
     narrator: {
          type: String,
           trim: true

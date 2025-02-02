@@ -786,3 +786,11 @@ exports.deleteAudioBook = asyncWrapper(async function(req, res) {
         data: null
     });
 });
+
+
+
+//////////////////////////////////////////////////
+// BLOG / ARTICLE
+//////////////////////////////////////////////////
+
+// exports.createBlogPost = refactory.createOneCreator();

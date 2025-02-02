@@ -131,6 +131,28 @@ exports.createOne = function(Model, title, queryField) {
 }
 
 
+exports.createOneCreator = function(Model, title, queryField) {
+    return asyncWrapper(async function(req, res) {
+        const userId = req.user._id;
+        const creator = await Profile.findOne({ user: userId, isCreator: true });
+        if(!creator) {
+            return json({ message: "You're not a creator!" })
+        }
+
+        const document = await Model.create({
+            [queryField]: creator._id,
+            ...req.body
+        });
+
+        res.status(201).json({
+            status: "success",
+            message: `${FirstCap(title)} created!`,
+            data: { [title]: document }
+        })
+    })
+}
+
+
 exports.updateOne = function(Model, title) {
     return asyncWrapper(async function(req, res) {
         const { id } = req.params;

@@ -517,7 +517,7 @@ Upload an Ebook(protected)
   "title": "The Art of Programming",
   "author": "Berula",
   "description": "A comprehensive guide to mastering programming",
-  "genre": "Programming / Education",
+  "genre": ["Programming", "Education"],
   "userId": "678e0ddcabb0db93f3706e14",
   "coverImage": {"File Object"},
   "ebook": {"File Object"}
@@ -545,8 +545,8 @@ Upload an Ebook(protected)
                 "url": "https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-cover-1738324880584?_a=BAMCkGUq0",
                 "public_id": "book-cover-1738324880584"
             },
-            "url": {
-                "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738324886/ebook-file-1738324885021",
+            "file": {
+                "url": "https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738324886/ebook-file-1738324885021",
                 "fileType": "pdf"
             },
             "likes": 0,
@@ -597,8 +597,8 @@ Upload an audiobook(protected)
                 "genre": ["Programming", "Education"]
             },
             "audio": {
-                "fileUrl": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738323069/podcast-episode-1738323065163.mp3",
-                "duration": 7.288163,
+                "url": "https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738323069/podcast-episode-1738323065163.mp3",
+                "duration_in_sec": 7.288163,
             },
             "stream": 0,
             "likes": 0,
@@ -609,12 +609,13 @@ Upload an audiobook(protected)
             "__v": 0
         }
     }
-}```
+}
+```
 
--    **PATCH** `/api/channels/books/{id}`
+-   **PATCH** `/api/channels/books/{id}`
     Updates an existing podcasts by Id. (protected)
 
--    **DELETE** `/api/channels/books/{id}`
+-   **DELETE** `/api/channels/books/{id}`
     Deletes a podcasts by Id. (protected)
 
 

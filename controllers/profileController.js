@@ -17,15 +17,16 @@ exports.becomeCreator = asyncWrapper(async function(req, res) {
         message: "Cannot process request, You are already a creator!"
     })
 
-    const creatorProfile = await Profile.updateOne(
+    const creatorProfile = await Profile.findOneAndUpdate(
         { user: userId },
-        { $set: { isCreator: true } },
+        { isCreator: true },
         { runValidators: true, new: true }
     );
 
     res.status(200).json({
         status: "success",
         message: "You are now a Creator!",
+        data: creatorProfile
     })
 });
 
@@ -54,9 +55,8 @@ exports.updateProfile = asyncWrapper(async function(req, res) {
     const filterArray = ["bio", "website", "country", "country", "city", "zipCode", "interests"];
     const filteredBody = filterObj(req.body, ...filterArray);
 
-    const updatedProfile = await Profile.updateOne(
-        { user: creatorId },
-        { $set: filteredBody },
+    const updatedProfile = await Profile.findOneAndUpdate(
+        { user: creatorId }, filteredBody,
         { runValidators: true, new: true }
     );
 
@@ -171,7 +171,9 @@ exports.getMyFollowers = asyncWrapper(async function(req, res) {
 });
 
 exports.getMyFollowings = asyncWrapper(async function(req, res) {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const userId = req.user.id;
+
+    const profile = await Profile.findOne({ user: userId });
     const followings = [...profile.following];
 
     res.status(200).json({

@@ -8,8 +8,6 @@ const router = express.Router();
 
 
 router.get("/", isAuthProtected, isRestricted, walletController.getAllUserWallets);
-router.delete("/:id", isAuthProtected, isRestricted, walletController.deleteUserWallet);
-
 router.get("/my-balance", isAuthProtected, walletController.getMyWallet);
 router.post("/create", isAuthProtected, walletController.createUserWallet);
 

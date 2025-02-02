@@ -73,7 +73,9 @@ exports.getAll = function(Model, title) {
 exports.getAllMine = function(Model, title, queryField) {
     return asyncWrapper(async function(req, res) {
         const userId = req.user._id;
-        const profile = await Profile.findOne({ user: userId });
+        const profile = await Profile.findOne({ user: userId, isCreator: true });
+        if(!profile) return res.json({ message: "You are not a creator!" })
+
         const docTitle = `${title}s`
         
         const myDocuments = await Model.find({

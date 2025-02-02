@@ -1,84 +1,70 @@
-const mongoose = require('mongoose');
-const slugify = require('slugify');
+const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const audiobookSchema = new mongoose.Schema({
+     creatorProfile: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Profile",
+     },
      title: {
           type: String,
           required: true,
-          trim: true
+          trim: true,
      },
-     author: {
-          type: String,
-          required: true,
-          trim: true
+     coverImage: {
+          url: { type: String, required: true },
+          public_id: String,
      },
-     description: { 
-          type: String,
-          trim: true
+     specification: {
+          author: {
+               type: String,
+               required: true,
+               trim: true,
+          },
+          description: {
+               type: mongoose.Schema.Types.Mixed,
+               trim: true,
+          },
+          publishedYear: Number,
+          genre: [String],
      },
-     publishedYear: {
-          type: Number
+     audio: {
+          url: {
+               type: String,
+               required: true,
+          },
+          public_id: String,
+          duration_in_seconds: Number,
      },
-     genre: {
-          type: String,
-          trim: true
+     slug: String,
+     stream: {
+          type: Number,
+          default: 0,
      },
-    userId: {
-         type: mongoose.Schema.Types.ObjectId,
-          ref: 'User',
-           required: true 
-        },
-    creatorProfile: {
-         type: mongoose.Schema.Types.ObjectId,
-          ref: 'Profile'
-         },
-    coverImage: {
-        url: { type: String, required: true },
-        public_id: String,
-    },
-    fileUrl: {
-         type: String,
-         required: true,
-          trim: true
-         }, 
-    duration: {
-         type: Number
-         }, // Duration in seconds
-    fileType: {
-         type: String,
-         trim: true
-         }, // Example: 'mp3', 'wav'
-    narrator: {
-         type: String,
-          trim: true
-         },
-    slug: {
-         type: String,
-          unique: true
-         },
-    stream: {
-         type: Number,
-          default: 0
-         }, // Number of times played
-    likes: {
-         type: Number,
-          default: 0
-         },
-}, { timestamps: true });
-
-audiobookSchema.pre("save", function(next) {
-    if (this.isNew || this.isModified("title")) {
-        this.slug = slugify(this.title, { lower: true });
-    }
-    next();
+     likes: {
+          type: Number,
+          default: 0,
+     },
+}, {
+    timestamps: true,
 });
 
-// Auto-populate creatorProfile and userId when querying
-audiobookSchema.pre(/^find/, function(next) {
-    this.populate({ path: "creatorProfile", select: "_id username profileName" })
-        .populate({ path: "userId", select: "_id username email" });
-    next();
+
+
+audiobookSchema.pre("save", function (next) {
+	if (this.isNew || this.isModified("title")) {
+		this.slug = slugify(this.title, { lower: true });
+	}
+	next();
 });
 
-const Audiobook = mongoose.model('Audiobook', audiobookSchema);
+audiobookSchema.pre(/^find/, function (next) {
+	this.populate({
+          path: "creatorProfile",
+          select: "_id username profileName"
+     });
+	next();
+});
+
+const Audiobook = mongoose.model("Audiobook", audiobookSchema);
 module.exports = Audiobook;

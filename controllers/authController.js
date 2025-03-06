@@ -10,7 +10,7 @@ const Profile = require("../models/profileModel");
 
 
 exports.signupUser = asyncWrapper(async function(req, res) {
-    const { firstname, lastname, username, email, password, passwordConfirm, phoneNumber } = req.body;
+    const { fullname, referralCode, username, email, password, passwordConfirm, phoneNumber } = req.body;
 
     // CHECK IF THE EMAIL ALREADY EXISTS
     const emailExist = await User.findOne({ email });
@@ -22,16 +22,16 @@ exports.signupUser = asyncWrapper(async function(req, res) {
 
     // GENERATE OTP AND EMAIL MESSAGE
     const otp = generateOtp();
-    const emailOtpMessage = otpEmail(otp, firstname);
+    const emailOtpMessage = otpEmail(otp, fullname);
 
     // CREATE USER
     const newUser = await User.create({
-        firstname,
-        lastname, 
+        fullname,
         username,
         phoneNumber,
+        referralCode,
         email: email.trim(),
-        password, 
+        password,
         passwordConfirm,
         otpCode: otp,
     });
@@ -41,10 +41,7 @@ exports.signupUser = asyncWrapper(async function(req, res) {
         status: 'success',
         message: 'Account created successfully!',
         data: { 
-            user: { 
-                name: newUser.firstname,
-                email: newUser.email,
-            }
+            newUser
         }
     });
 
@@ -137,7 +134,7 @@ exports.requestOtp = asyncWrapper(async function(req, res) {
 
     // GENERATE NEW OTP CODE
     const otp = generateOtp();
-    const emailOtpResendMessage = otpEmail(otp, user.firstname);
+    const emailOtpResendMessage = otpEmail(otp, user.fullname);
     user.otpIssuedAt = Date.now();
     user.otpCode = otp;
     await user.save({ validateBeforeSave: false });
@@ -145,9 +142,7 @@ exports.requestOtp = asyncWrapper(async function(req, res) {
     res.status(200).json({
         status: 'success',
         message: 'OTP verification code resent!',
-        data: { user: { 
-            name: user.firstname, email: user.email, expiresIn: user.otpExpiresIn
-        }}
+        data: { user }
     });
 
     await sendEmail({

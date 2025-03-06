@@ -30,6 +30,10 @@ const podcastSchema = new mongoose.Schema({
             duration_in_sec: Number,
         },
         streams: Number,
+        addedDate: {
+            type: Date,
+            default: Date.now
+        }
     }],
     slug: String,
     likes: Number,

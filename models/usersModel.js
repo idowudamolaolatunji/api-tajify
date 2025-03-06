@@ -9,17 +9,11 @@ const bcrypt = require('bcrypt');
 //// SCHEMA CONFIGURATION  ////
 //////////////////////////////////////////////
 const userSchema = new mongoose.Schema({
-    firstname: {
+    fullname: {
         type: String,
         lowercase: true,
         required: true,
     },
-    lastname: {
-        type: String,
-        lowercase: true,
-        required: true,
-    },
-    fullname: String,
     phoneNumber: String,
     username: String,
     email: {
@@ -49,6 +43,7 @@ const userSchema = new mongoose.Schema({
         enum: ["user", "admin", "moderator"],
         default: "user"
     },
+    referralCode: String,
     isActive: {
         type: Boolean,
         default: true
@@ -96,22 +91,19 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.pre("save", function (next) {
-    if (this.isNew || this.isModified('firstname') || this.isModified('lastname')) {
+    if (this.isNew || this.isModified('fullname')) {
         // CREATING AND UPDATING USER SLUG
-        const fullname = `${this.firstname} ${this.lastname}`.toLowerCase();
-        console.log(fullname)
-        const slug = slugify(fullname, { lower: true });
+        const slug = slugify(this.fullname, { lower: true });
         this.slug = `${slug}-${this._id.toString().slice(0, 4)}`;
-        this.fullname = fullname;
     }
     
 	next();
 });
 
 userSchema.pre("save", function (next) {
-    // OTP CODE EXPIRES IN 2 MINS (120 SECS)
+    // OTP CODE EXPIRES IN 3 MINS (180 SECS)
     if(this.isNew || this.isModified('otpIssuedAt')) {
-        this.otpExpiresIn = Date.now() + 2 * 60 * 1000;
+        this.otpExpiresIn = Date.now() + 3 * 60 * 1000;
     }
 	next();
 })

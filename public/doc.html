@@ -621,5 +621,110 @@
 				<p><strong>DELETE</strong> <code>/api/channels/podcasts/{id}</code> Deletes a podcasts by Id. (protected)</p>
 			</li>
 		</ul>
+		<h3 id="image-books">Image - Books</h3>
+		<p>
+			<strong>POST</strong> <code>/api/channels/books/upload</code>
+			Upload an Ebook(protected)
+			<strong>Request Body</strong>
+		</p>
+		<pre><code class="lang-json">{
+  <span class="hljs-attr">"title"</span>: <span class="hljs-string">"The Art of Programming"</span>,
+  <span class="hljs-attr">"author"</span>: <span class="hljs-string">"Berula"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"A comprehensive guide to mastering programming"</span>,
+  <span class="hljs-attr">"genre"</span>: [<span class="hljs-string">"Programming"</span>, <span class="hljs-string">"Education"</span>],
+  <span class="hljs-attr">"userId"</span>: <span class="hljs-string">"678e0ddcabb0db93f3706e14"</span>,
+  <span class="hljs-attr">"coverImage"</span>: {<span class="hljs-attr">"File Object"</span>},
+  <span class="hljs-attr">"ebook"</span>: {<span class="hljs-attr">"File Object"</span>}
+}
+</code></pre>
+		<p><strong>Response</strong></p>
+		<pre><code class="lang-json">{
+    <span class="hljs-attr">"status"</span>: <span class="hljs-string">"success"</span>,
+    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Ebook uploaded successfully"</span>,
+    <span class="hljs-attr">"data"</span>: {
+        <span class="hljs-attr">"book"</span>: {
+            <span class="hljs-attr">"title"</span>: <span class="hljs-string">"The Art of Programming"</span>,
+            <span class="hljs-attr">"specification"</span>: {
+                <span class="hljs-attr">"author"</span>: <span class="hljs-string">"Shapale"</span>,
+                <span class="hljs-attr">"description"</span>: <span class="hljs-string">"A comprehensive guide to master programming"</span>,
+                <span class="hljs-attr">"genre"</span>: [
+                    [<span class="hljs-string">"Programming"</span>, <span class="hljs-string">"Education"</span>]
+                ]
+            },
+            <span class="hljs-attr">"creatorProfile"</span>: <span class="hljs-string">"678e0e14abb0db93f3706e18"</span>,
+            <span class="hljs-attr">"coverImage"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-cover-1738324880584?_a=BAMCkGUq0"</span>,
+                <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"book-cover-1738324880584"</span>
+            },
+            <span class="hljs-attr">"file"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/raw/upload/v1738324886/ebook-file-1738324885021"</span>,
+                <span class="hljs-attr">"fileType"</span>: <span class="hljs-string">"pdf"</span>
+            },
+            <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"679cbb966ed9204a2696f5e9"</span>,
+            <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-31T12:01:26.611Z"</span>,
+            <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-31T12:01:26.611Z"</span>,
+            <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"the-art-of-programming"</span>,
+            <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+        }
+    }
+}
+</code></pre>
+		<p>
+			<strong>POST</strong> <code>/api/channels/books/upload-audio</code>
+			Upload an audiobook(protected)
+			<strong>Request Body</strong>
+		</p>
+		<pre><code class="lang-json">{
+  <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Javascript mastery"</span>,
+  <span class="hljs-attr">"author"</span>: <span class="hljs-string">"Achebe"</span>,
+  <span class="hljs-attr">"description"</span>: <span class="hljs-string">"A comprehensive guide for programming"</span>,
+  <span class="hljs-attr">"genre"</span>: <span class="hljs-string">"Programming / Education"</span>,
+  <span class="hljs-attr">"userId"</span>: <span class="hljs-string">"678e0ddcabb0db93f3706e14"</span>,
+  <span class="hljs-attr">"coverImage"</span>: {<span class="hljs-attr">"File Object"</span>},
+  <span class="hljs-attr">"ebook"</span>: {<span class="hljs-attr">"File Object"</span>}
+}
+</code></pre>
+		<p><strong>Response</strong></p>
+		<pre><code class="lang-json">{
+    <span class="hljs-attr">"success"</span>: <span class="hljs-literal">true</span>,
+    <span class="hljs-attr">"message"</span>: <span class="hljs-string">"Audiobook uploaded successfully"</span>,
+    <span class="hljs-attr">"data"</span>: {
+        <span class="hljs-attr">"book"</span>: {
+            <span class="hljs-attr">"creatorProfile"</span>: <span class="hljs-string">"678e0e14abb0db93f3706e18"</span>,
+            <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Javascript mastery"</span>,
+            <span class="hljs-attr">"userId"</span>: <span class="hljs-string">"678e0ddcabb0db93f3706e14"</span>,
+            <span class="hljs-attr">"coverImage"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/image/upload/c_fill,g_auto,h_500,q_70,w_500/book-coverimage-1738323065135?_a=BAMCkGUq0"</span>,
+                <span class="hljs-attr">"public_id"</span>: <span class="hljs-string">"book-coverimage-1738323065135"</span>
+            },
+            <span class="hljs-attr">"specification"</span>: {
+                <span class="hljs-attr">"author"</span>: <span class="hljs-string">"Achebe"</span>,
+                <span class="hljs-attr">"description"</span>: <span class="hljs-string">"A comprehensive guide for programming"</span>,
+                <span class="hljs-attr">"genre"</span>: [<span class="hljs-string">"Programming"</span>, <span class="hljs-string">"Education"</span>]
+            },
+            <span class="hljs-attr">"audio"</span>: {
+                <span class="hljs-attr">"url"</span>: <span class="hljs-string">"https://res.cloudinary.com/dy3bwvkeb/video/upload/v1738323069/podcast-episode-1738323065163.mp3"</span>,
+                <span class="hljs-attr">"duration_in_sec"</span>: <span class="hljs-number">7.288163</span>,
+            },
+            <span class="hljs-attr">"stream"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"likes"</span>: <span class="hljs-number">0</span>,
+            <span class="hljs-attr">"_id"</span>: <span class="hljs-string">"679cb480f74a7553a7c38011"</span>,
+            <span class="hljs-attr">"createdAt"</span>: <span class="hljs-string">"2025-01-31T11:31:12.426Z"</span>,
+            <span class="hljs-attr">"updatedAt"</span>: <span class="hljs-string">"2025-01-31T11:31:12.426Z"</span>,
+            <span class="hljs-attr">"slug"</span>: <span class="hljs-string">"javascript-mastery"</span>,
+            <span class="hljs-attr">"__v"</span>: <span class="hljs-number">0</span>
+        }
+    }
+}
+</code></pre>
+		<ul>
+			<li>
+				<p><strong>PATCH</strong> <code>/api/channels/books/{id}</code> Updates an existing podcasts by Id. (protected)</p>
+			</li>
+			<li>
+				<p><strong>DELETE</strong> <code>/api/channels/books/{id}</code> Deletes a podcasts by Id. (protected)</p>
+			</li>
+		</ul>
 	</body>
 </html>

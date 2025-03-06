@@ -79,7 +79,7 @@ exports.deleteAccount = asyncWrapper(async function(req, res) {
 //     }
     
 //     // FILTER WHAT CAN BE EDITED
-//     const filterArray = ["email", "firstname", "lastname", "country", "phoneNumber", "state"]
+//     const filterArray = ["email", "fullname", "country", "phoneNumber", "state"]
 //     const filteredBody = filterObj(req.body, ...filterArray);
 //     const user = await User.findByIdAndUpdate(req.user._id, filteredBody, {
 //         new: true,

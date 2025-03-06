@@ -61,8 +61,6 @@ or
 	"data": {
 		"user": {
 			"_id": "67672cfe46cebe48315a9104",
-			"firstname": "taiwo",
-			"lastname": "bankole",
 			"username": "taiwo_banks001",
 			"phoneNumber": "08157113270",
 			"email": "user@example.com",
@@ -90,8 +88,7 @@ or
 
 ```json
 {
-	"firstname": "taiwo",
-	"lastname": "bankole",
+	"fullname": "taiwo bankole",
 	"username": "taiwo_banks001",
 	"email": "user@example.com",
 	"phoneNumber": "08157113270",
@@ -179,8 +176,6 @@ or
 	"data": {
 		"user": {
 			"_id": "67672cfe46cebe48315a9104",
-			"firstname": "taiwo",
-			"lastname": "bankole",
 			"username": "taiwo_banks001",
 			"phoneNumber": "08157113270",
 			"email": "user@example.com",
@@ -312,8 +307,6 @@ or
 			},
 			"views": 0,
 			"likes": 0,
-			"shares": 0,
-			"saves": 0,
 			"comments": 0,
 			"type": "tube-short",
 			"hashTags": ["#makemoney2024", "#moneyisgood"],
@@ -537,7 +530,7 @@ Upload an Ebook(protected)
                 "author": "Shapale",
                 "description": "A comprehensive guide to master programming",
                 "genre": [
-                    ["Programming", "Education"]
+                    "Programming", "Education"
                 ]
             },
             "creatorProfile": "678e0e14abb0db93f3706e18",

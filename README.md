@@ -502,7 +502,7 @@ or
 
 ### Image - Books
 **POST** `/api/channels/books/upload`
-Upload an Ebook(protected)
+Upload a book(protected)
 **Request Body**
 
 ```json
@@ -513,7 +513,7 @@ Upload an Ebook(protected)
   "genre": ["Programming", "Education"],
   "userId": "678e0ddcabb0db93f3706e14",
   "coverImage": {"File Object"},
-  "ebook": {"File Object"}
+  "book": {"File Object"}
 }
 
 
@@ -522,7 +522,7 @@ Upload an Ebook(protected)
 ```json
 {
     "status": "success",
-    "message": "Ebook uploaded successfully",
+    "message": "Book uploaded successfully",
     "data": {
         "book": {
             "title": "The Art of Programming",
@@ -565,7 +565,7 @@ Upload an audiobook(protected)
   "genre": "Programming / Education",
   "userId": "678e0ddcabb0db93f3706e14",
   "coverImage": {"File Object"},
-  "ebook": {"File Object"}
+  "book": {"File Object"}
 }
 ```
 

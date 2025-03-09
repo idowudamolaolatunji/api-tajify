@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
 
-const eBookSchema = new mongoose.Schema({
+const bookSchema = new mongoose.Schema({
      creatorProfile: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Profile",
@@ -46,14 +46,14 @@ const eBookSchema = new mongoose.Schema({
 
 
 
-eBookSchema.pre("save", function (next) {
+bookSchema.pre("save", function (next) {
 	if (this.isNew || this.isModified("title")) {
 		this.slug = slugify(this.title, { lower: true });
 	}
 	next();
 });
 
-eBookSchema.pre(/^find/, function (next) {
+bookSchema.pre(/^find/, function (next) {
 	this.populate({
           path: "creatorProfile",
           select: "_id username profileName"
@@ -61,5 +61,5 @@ eBookSchema.pre(/^find/, function (next) {
 	next();
 });
 
-const EBook = mongoose.model("EBook", eBookSchema);
-module.exports = EBook;
+const Book = mongoose.model("Book", bookSchema);
+module.exports = Book;

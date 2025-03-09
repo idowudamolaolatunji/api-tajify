@@ -55,7 +55,7 @@ podcastSchema.pre("save", function(next) {
 podcastSchema.pre(/^find/, function(next) {
     this.populate({
         path: "creatorProfile",
-        select: "_id username",
+        select: "_id profileName",
     });
 
     next();

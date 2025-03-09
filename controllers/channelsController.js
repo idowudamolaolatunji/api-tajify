@@ -444,7 +444,7 @@ exports.likeTube = asyncWrapper(async function(req, res) {
 //////////////////////////////////////////////////
 
 exports.getAllBooks = refactory.getAll(Book, "book",);
-exports.getbookById = refactory.getOne(Book, "book")
+exports.getBookById = refactory.getOne(Book, "book")
 
 exports.getAllMyBooks = refactory.getAllMine(Book, "book", "creatorProfile");
 
@@ -570,7 +570,7 @@ exports.updateBook = asyncWrapper(async function (req, res) {
 });
 
 //delete a book
-exports.deletbook = asyncWrapper(async function(req, res) {
+exports.deleteBook = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const { id } = req.params;
 

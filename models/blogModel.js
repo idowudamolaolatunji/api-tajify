@@ -34,5 +34,14 @@ const blogSchema = new mongoose.Schema({
     timestamps: true 
 });
 
+
+blogSchema.pre(/^find/, function (next) {
+	this.populate({
+        path: "creatorProfile",
+        select: "_id username profileName"
+    });
+	next();
+});
+
 const Blog = mongoose.model("Blog", blogSchema);
 module.exports = Blog;

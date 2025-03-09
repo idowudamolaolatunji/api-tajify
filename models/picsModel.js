@@ -31,11 +31,19 @@ const picSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    
 }, {
     timestamps: true
 });
 
+
+picSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: "creatorProfile",
+        select: "_id profileName",
+    });
+
+    next();
+});
 
 
 const Pic = mongoose.model("Pic", picSchema);

@@ -9,6 +9,8 @@ const Profile = require("../models/profileModel")
 const Podcast = require("../models/podcastModel");
 const { FirstCap } = require("../utils/helpers");
 const Book = require("../models/bookModel");
+const Blog = require("../models/blogModel");
+const Pic = require("../models/picsModel");
 ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////
 
@@ -322,125 +324,9 @@ exports.deleteOnePodcastById = refactory.deleteOne(Podcast, "podcast");
 exports.getAllMyPodcasts = refactory.getAllMine(Podcast, "podcast", "creatorProfile");
 
 
-//////////////////////////////////////////////////
-// COMMENTING POST
-//////////////////////////////////////////////////
-
-exports.writeComment = asyncWrapper(async function(req, res) {
-    const userId = req.user._id;
-    const { itemId, content } = req.body;
-
-    if (!itemId || !content) {
-        return res.json({ message: "Invalid request data" });
-    }
-  
-    const userProfile = await Profile.findOne({ user: userId });
-    const newComment = await Comment.create({
-        itemId,
-        content,
-        userProfile: userProfile._id,
-    });
-
-    const post = await Tube.findOne({ _id: itemId })
-    if(post) {
-        await Tube.updateOne(
-            { _id: post._id },
-            { $inc: { comments: 1 } },
-            { runValidators: true, new: true }
-        )
-    }
-
-    res.status(201).json({
-        status: "success",
-        message: "Commented!",
-        data: { comment: newComment }
-    })
-});
-
-
-exports.editComment = asyncWrapper(async function(req, res) {
-    const userId = req.user._id;
-    const { id } = req.params;
-    const { content } = req.body;
-
-    const userProfile = await Profile.findOne({ user: userId });
-    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
-    if(!comment) return res.json({ message: "Cannot find comment" });
-    
-    const editedComment = await Comment.updateOne(
-        { _id: comment._id }, { $set: { content } },
-        { runValidators: true, new: true }
-    );
-
-    res.status(200).json({
-        status: "success",
-        message: "Editted!",
-        data: { comment: editedComment }
-    })
-});
-
-
-exports.deleteComment = asyncWrapper(async function(req, res) {
-    const userId = req.user._id;
-    const { id } = req.params;
-
-    const userProfile = await Profile.findOne({ user: userId });
-    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
-    if(!comment) return res.json({ message: "Cannot find comment" });
-    await Comment.deleteOne({ _id: comment.id });
-
-    const post = await Tube.findOne({ _id: comment.itemId })
-    if(post) {
-        await Tube.updateOne(
-            { _id: post._id },
-            { $inc: { comments: -1 } },
-            { runValidators: true, new: true }
-        )
-    }
-
-    res.status(200).json({
-        status: "success",
-        message: "Deleted!",
-        data: null
-    })
-});
-
-
-exports.getItemComments = asyncWrapper(async function(req, res) {
-    const { itemId } = req.params;
-    const comments = await Comment.find({ itemId });
-    res.status(200).json({
-        status: "success",
-        count: comments.length,
-        data: { comments }
-    })
-});
-
-
-
-exports.getAllComments = refactory.getAllPaginated(Comment, "comment");
-exports.getCommentById = refactory.getOne(Comment, "comment");
-
-
-
 
 //////////////////////////////////////////////////
-// LIKING AND UNLINKING
-//////////////////////////////////////////////////
-
-exports.likeTube = asyncWrapper(async function(req, res) {
-    
-})
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////
-// E-BOOKS / BOOKS
+// BOOKS
 //////////////////////////////////////////////////
 
 exports.getAllBooks = refactory.getAll(Book, "book",);
@@ -592,7 +478,192 @@ exports.deleteBook = asyncWrapper(async function(req, res) {
 
 
 //////////////////////////////////////////////////
-// BLOG / ARTICLE
+// BLOGS
 //////////////////////////////////////////////////
 
-// exports.createBlogPost = refactory.createOneCreator();
+exports.createBlogPost = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if (!creator) return res.json({ message: 'Only creators can upload an book!' });
+
+    const blogPost = await Blog.create({
+        ...req.body,
+        creatorProfile: creator._id,
+    });
+
+    res.status(201).json({
+        status: 'success',
+        message: 'Post uploaded successfully',
+        data: { blogPost },
+    });
+});
+
+exports.getAllBlogPosts = refactory.getAll(Blog, "blog",);
+exports.getBlogPostById = refactory.getOne(Blog, "blog")
+exports.getAllMyBlogPosts = refactory.getAllMine(Blog, "blog", "creatorProfile");
+
+
+
+
+//////////////////////////////////////////////////
+// PICS IMAGE
+//////////////////////////////////////////////////
+
+exports.uploadPics = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const imageFile = req.file;
+
+    const creator = await Profile.findOne({ user: userId, isCreator: true });
+    if(!creator) return res.json({ message: "Only creators can upload audio!" });
+    if(!imageFile) return res.json({ message: "Podcast pics image not uploaded correctly!" });
+
+    // UPLOAD THE AUDIO pics IMAGE
+    const imageFileUpload = new Promise((resolve, reject) => {
+        cloudinary.uploader.upload(imageFile.path, {
+            resource_type: 'image',
+            public_id: `pics-${Date.now()}`,
+            format: "jpeg",
+        }, function(err, result) {
+            if (err) reject(new Error(`Error uploading pics image!`));
+            else resolve(result);
+        });
+    });
+
+    // CROP THE AUDIO pics IMAGE
+    
+    const { public_id, width, height, bytes } = await imageFileUpload;
+    const imageCroppedUrl = await cloudinary.url(public_id, {
+        gravity: "auto",
+        crop: "fill",
+        quality: 70
+    })
+    const imageData = { url: imageCroppedUrl, public_id }
+
+    const picsImage = await Pic.create({
+        ...req.body,
+        creatorProfile: creator._id,
+        preview: imageData,
+        width, height, size: bytes
+    });
+
+    res.status(201).json({
+        status: "success",
+        message: "Pics Uploaded",
+        data: { image: picsImage }
+    });
+});
+
+exports.getAllPics = refactory.getAll(Pic, "pics",);
+exports.getPicsById = refactory.getOne(Pic, "pics")
+exports.getAllMyPics = refactory.getAllMine(Pic, "pics", "creatorProfile");
+
+
+
+
+
+
+//////////////////////////////////////////////////
+// COMMENTING POST
+//////////////////////////////////////////////////
+
+exports.writeComment = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const { itemId, content } = req.body;
+
+    if (!itemId || !content) {
+        return res.json({ message: "Invalid request data" });
+    }
+  
+    const userProfile = await Profile.findOne({ user: userId });
+    const newComment = await Comment.create({
+        itemId,
+        content,
+        userProfile: userProfile._id,
+    });
+
+    const post = await Tube.findOne({ _id: itemId })
+    if(post) {
+        await Tube.updateOne(
+            { _id: post._id },
+            { $inc: { comments: 1 } },
+            { runValidators: true, new: true }
+        )
+    }
+
+    res.status(201).json({
+        status: "success",
+        message: "Commented!",
+        data: { comment: newComment }
+    })
+});
+
+
+exports.editComment = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const { id } = req.params;
+    const { content } = req.body;
+
+    const userProfile = await Profile.findOne({ user: userId });
+    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
+    if(!comment) return res.json({ message: "Cannot find comment" });
+    
+    const editedComment = await Comment.updateOne(
+        { _id: comment._id }, { $set: { content } },
+        { runValidators: true, new: true }
+    );
+
+    res.status(200).json({
+        status: "success",
+        message: "Editted!",
+        data: { comment: editedComment }
+    })
+});
+
+
+exports.deleteComment = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const { id } = req.params;
+
+    const userProfile = await Profile.findOne({ user: userId });
+    const comment = await Comment.findOne({ id, userProfile: userProfile._id });
+    if(!comment) return res.json({ message: "Cannot find comment" });
+    await Comment.deleteOne({ _id: comment.id });
+
+    const post = await Tube.findOne({ _id: comment.itemId })
+    if(post) {
+        await Tube.updateOne(
+            { _id: post._id },
+            { $inc: { comments: -1 } },
+            { runValidators: true, new: true }
+        )
+    }
+
+    res.status(200).json({
+        status: "success",
+        message: "Deleted!",
+        data: null
+    })
+});
+
+
+exports.getItemComments = asyncWrapper(async function(req, res) {
+    const { itemId } = req.params;
+    const comments = await Comment.find({ itemId });
+    res.status(200).json({
+        status: "success",
+        count: comments.length,
+        data: { comments }
+    })
+});
+
+exports.getAllComments = refactory.getAllPaginated(Comment, "comment");
+exports.getCommentById = refactory.getOne(Comment, "comment");
+
+
+
+
+//////////////////////////////////////////////////
+// LIKING AND UNLINKING
+//////////////////////////////////////////////////
+
+exports.likeTube = asyncWrapper(async function(req, res) {});

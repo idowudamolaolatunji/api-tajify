@@ -62,5 +62,25 @@ router.get("/books/my-books", isAuthProtected, channelsController.getAllMyBooks)
 router.patch("/books/:id", isAuthProtected, channelsController.updateBook);
 router.delete("/books/:id", isAuthProtected, channelsController.deleteBook);
 
+
+////////////////////////////////////////////////// 
+// BLOGS
+//////////////////////////////////////////////////
+
+router.get("/blogs", isAuthProtected, channelsController.getAllBlogPosts);
+router.get("/blogs/:id", isAuthProtected, channelsController.getBlogPostById);
+router.post("/blogs/post", isAuthProtected, channelsController.createBlogPost);
+router.get("/blogs/my-posts", isAuthProtected, channelsController.getAllMyBlogPosts);
+
+
+////////////////////////////////////////////////// 
+// PICS IMAGE
+//////////////////////////////////////////////////
+
+router.get("/pics", isAuthProtected, channelsController.getAllPics);
+router.get("/pics/:id", isAuthProtected, channelsController.getPicsById);
+router.post("/pics/upload", uploadSingleImage, isAuthProtected, channelsController.uploadPics);
+router.get("/pics/my-posts", isAuthProtected, channelsController.getAllMyPics);
+
  
 module.exports = router; 

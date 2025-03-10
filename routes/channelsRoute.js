@@ -8,7 +8,6 @@ const { uploadSingleTube, uploadSingleAudio, uploadSingleImage, uploadSingleBook
 const router = express.Router();
 
 
-
 //////////////////////////////////////////////////
 // TUBES
 //////////////////////////////////////////////////
@@ -23,7 +22,6 @@ router.patch("/tubes/:id", isAuthProtected, channelsController.updateOneTubeById
 router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeById);
 
  
- 
 //////////////////////////////////////////////////
 // MUSIC
 //////////////////////////////////////////////////
@@ -34,7 +32,6 @@ router.post("/music/upload", uploadSingleAudio, isAuthProtected, channelsControl
 
 router.patch("/music/:id", isAuthProtected, channelsController.updateOneMusicById);
 router.delete("/music/:id", isAuthProtected, channelsController.deleteOneMusicById);
-
 
 
 //////////////////////////////////////////////////
@@ -66,7 +63,6 @@ router.delete("/books/:id", isAuthProtected, channelsController.deleteBook);
 ////////////////////////////////////////////////// 
 // BLOGS
 //////////////////////////////////////////////////
-
 router.get("/blogs", isAuthProtected, channelsController.getAllBlogPosts);
 router.get("/blogs/:id", isAuthProtected, channelsController.getBlogPostById);
 router.post("/blogs/post", isAuthProtected, channelsController.createBlogPost);
@@ -76,7 +72,6 @@ router.get("/blogs/my-posts", isAuthProtected, channelsController.getAllMyBlogPo
 ////////////////////////////////////////////////// 
 // PICS IMAGE
 //////////////////////////////////////////////////
-
 router.get("/pics", isAuthProtected, channelsController.getAllPics);
 router.get("/pics/:id", isAuthProtected, channelsController.getPicsById);
 router.post("/pics/upload", uploadSingleImage, isAuthProtected, channelsController.uploadPics);

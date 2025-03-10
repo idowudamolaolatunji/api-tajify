@@ -21,10 +21,5 @@ router.patch("/follow-creator/back", isAuthProtected, profileController.followBa
 router.get("/followers", isAuthProtected, profileController.getMyFollowers);
 router.get("/followings", isAuthProtected, profileController.getMyFollowings);
 
-////////////////////////////////////////////////////
-// router.get("/creator/followers", isAuthProtected, profileController.getMyFollowers);
-// router.get("/creator/followings", isAuthProtected, profileController.getMyFollowings);
-
-
 
 module.exports = router;

@@ -3,7 +3,6 @@ const { asyncWrapper } = require("../utils/handlers");
 const { FirstCap } = require("../utils/helpers");
 
 
-
 exports.getAllPaginated = function(Model, title) {
     return asyncWrapper(async function(req, res) {
         const docTitle = `${title}s`

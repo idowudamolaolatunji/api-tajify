@@ -13,7 +13,7 @@ const bookSchema = new mongoose.Schema({
      },
      specification: {
           author: {
-               type: String,
+               type: [String],
                required: true,
                trim: true,
           },
@@ -29,10 +29,7 @@ const bookSchema = new mongoose.Schema({
           public_id: String,
      },
      file: {
-          url: {
-               type: String,
-               required: true
-          },
+          url: { type: String, required: true },
           public_id: String
      },
      slug: String,

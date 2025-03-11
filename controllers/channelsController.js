@@ -7,7 +7,7 @@ const Audio = require("../models/audioModel");
 const Comment = require("../models/commentModel");
 const Profile = require("../models/profileModel")
 const Podcast = require("../models/podcastModel");
-const { FirstCap } = require("../utils/helpers");
+const { FirstCap, formatFileSize } = require("../utils/helpers");
 const Book = require("../models/bookModel");
 const Blog = require("../models/blogModel");
 const Pic = require("../models/picsModel");
@@ -85,7 +85,8 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload tube "});
-    if(!tubeFile || !thumbnailFile) return res.json({ message: "Tube video and thumbnail are required!" })
+    if(!thumbnailFile) return res.json({ message: "Tube thumbnail not uploaded correctly, WEBP file not supported!" })
+    if(!tubeFile) return res.json({ message: "Tube video is required and not uploaded correctly!" })
 
     // UPLOAD THE TUBE THUMBNAIL
     const thumbnailFileUpload = new Promise((resolve, reject) => {
@@ -165,7 +166,8 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload audio!" });
-    if(!audioFile || !coverImageFile) return res.json({ message: "Music file and cover image not uploaded correctly!" })
+    if(!coverImageFile) return res.json({ message: "Music cover image not uploaded correctly, WEBP file not supported!" })
+    if(!audioFile) return res.json({ message: "Music file not uploaded correctly!" })
 
     // UPLOAD THE AUDIO COVER IMAGE
     const coverImageFileUpload = new Promise((resolve, reject) => {
@@ -236,14 +238,14 @@ exports.createPodcast = asyncWrapper(async function(req, res) {
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload audio!" });
-    if(!coverImageFile) return res.json({ message: "Podcast cover image not uploaded correctly!" });
+    if(!coverImageFile) return res.json({ message: "Podcast cover image not uploaded correctly, WEBP file not supported!" });
 
     // UPLOAD THE AUDIO COVER IMAGE
     const coverImageFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(coverImageFile.path, {
             resource_type: 'image',
             public_id: `podcast-coverimage-${Date.now()}`,
-            format: "jpeg",
+            // format: "jpeg",
         }, function(err, result) {
             if (err) reject(new Error(`Error uploading cover image!`));
             else resolve(result.public_id);
@@ -339,14 +341,13 @@ exports.createBook = asyncWrapper(async (req, res) => {
     const userId = req.user._id;
     const coverImageFile = req.files.coverImage[0];
     const bookFile = req.files.book[0];
-    const { description, author, genre } = req.body;
+    const { title, description, author, genre } = req.body;
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if (!creator) return res.json({ message: 'Only creators can upload an book!' });
 
-    if (!coverImageFile || !bookFile) {
-        return res.json({ message: 'Book cover image and book file not uploaded correctly!' });
-    }
+    if (!coverImageFile) return res.json({ message: 'Book cover image not uploaded correctly, WEBP file not supported!' });
+    if (!bookFile) return res.json({ message: 'Book file not uploaded correctly!' });
 
     // Upload Cover Image
     const coverImageUpload = new Promise((resolve, reject) => {
@@ -377,10 +378,11 @@ exports.createBook = asyncWrapper(async (req, res) => {
     // Upload book File
     const bookFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(bookFile.path, {
-            resource_type: 'raw',
+            resource_type: "raw",
+            allowed_formats: ['pdf'],
             public_id: `book-file-${Date.now()}`
         }, function (err, result) {
-                if (err) reject(new Error('Error uploading book!'));
+                if (err) reject(new Error('Error uploading book file!'));
                 else resolve(result);
             }
         );
@@ -390,16 +392,16 @@ exports.createBook = asyncWrapper(async (req, res) => {
     const bookData = {
         url: bookResult.secure_url,
         public_id: bookResult.public_id,
-        fileType: 'pdf',
     };
         
     const book = await Book.create({
         creatorProfile: creator._id,
         coverImage: coverImageData,
         file: bookData,
+        title,
         specification: {
             description,
-            author,
+            author: JSON.parse(author),
             genre: JSON.parse(genre)
         },
     });
@@ -512,19 +514,20 @@ exports.getAllMyBlogPosts = refactory.getAllMine(Blog, "blog", "creatorProfile")
 exports.uploadPics = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const imageFile = req.file;
+    console.log(req.file)
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
-    if(!creator) return res.json({ message: "Only creators can upload audio!" });
-    if(!imageFile) return res.json({ message: "Podcast pics image not uploaded correctly!" });
+    if(!creator) return res.json({ message: "Only creators can upload Pictures!" });
+    if(!imageFile) return res.json({ message: "Picture not uploaded correctly, WEBP file not supported!" });
 
     // UPLOAD THE AUDIO pics IMAGE
     const imageFileUpload = new Promise((resolve, reject) => {
         cloudinary.uploader.upload(imageFile.path, {
             resource_type: 'image',
             public_id: `pics-${Date.now()}`,
-            format: "jpeg",
+            // format: "jpeg",
         }, function(err, result) {
-            if (err) reject(new Error(`Error uploading pics image!`));
+            if (err) reject(new Error(`Error uploading Picture!`));
             else resolve(result);
         });
     });
@@ -540,10 +543,10 @@ exports.uploadPics = asyncWrapper(async function(req, res) {
     const imageData = { url: imageCroppedUrl, public_id }
 
     const picsImage = await Pic.create({
-        ...req.body,
         creatorProfile: creator._id,
+        title: req.body.title,
         preview: imageData,
-        width, height, size: bytes
+        width, height, size: formatFileSize(bytes)
     });
 
     res.status(201).json({

@@ -65,3 +65,13 @@ exports.countNum = function(val) {
 		return currency + num.toFixed(0);
 	}
 }
+
+
+exports.formatFileSize = function(sizeInBytes) {
+	const units = ["B", "KB", "MB"];
+	const index = Math.floor(Math.log(sizeInBytes) / Math.log(1024));
+	const size = sizeInBytes / Math.pow(1024, index);
+  
+	return `${size.toFixed(2)} ${units[index]}`;
+  }
+  

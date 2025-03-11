@@ -18,7 +18,7 @@ const picSchema = new mongoose.Schema({
     },
     width: Number,
     height: Number,
-    size: Number,
+    size: String,
     views: {
         type: Number,
         default: 0

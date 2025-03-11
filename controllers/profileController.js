@@ -31,6 +31,7 @@ exports.becomeCreator = asyncWrapper(async function(req, res) {
 });
 
 exports.getAllProfiles = refactory.getAll(Profile, "Profile")
+exports.getProfileById = refactory.getOne(Profile, "Profile")
 
 exports.getMyProfile = asyncWrapper(async function(req, res) {
     const creatorId = req.user._id;

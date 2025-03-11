@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/tubes", channelsController.getTubes);
 router.get("/tubes/:id", channelsController.getOneTubeById);
 
-router.get("/tubes/my-tube", isAuthProtected, channelsController.getAllMyTubes);
+router.get("/tubes/my-tubes", isAuthProtected, channelsController.getAllMyTubes);
 router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);
 router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsController.uploadTube);
 
@@ -27,7 +27,7 @@ router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeByI
 //////////////////////////////////////////////////
 router.get("/music", isAuthProtected, isRestricted, channelsController.getAllMusic);
 router.get("/music/:id", channelsController.getOneMusicById);
-router.get("/music/my-music", isAuthProtected, channelsController.getAllMyMusic);
+router.get("/music/my-musics", isAuthProtected, channelsController.getAllMyMusic);
 router.post("/music/upload", uploadSingleAudio, isAuthProtected, channelsController.uploadMusicAudio);
 
 router.patch("/music/:id", isAuthProtected, channelsController.updateOneMusicById);
@@ -66,7 +66,7 @@ router.delete("/books/:id", isAuthProtected, channelsController.deleteBook);
 router.get("/blogs", isAuthProtected, channelsController.getAllBlogPosts);
 router.get("/blogs/:id", isAuthProtected, channelsController.getBlogPostById);
 router.post("/blogs/post", isAuthProtected, channelsController.createBlogPost);
-router.get("/blogs/my-posts", isAuthProtected, channelsController.getAllMyBlogPosts);
+router.get("/blogs/my-blogs", isAuthProtected, channelsController.getAllMyBlogPosts);
 
 
 ////////////////////////////////////////////////// 
@@ -75,7 +75,7 @@ router.get("/blogs/my-posts", isAuthProtected, channelsController.getAllMyBlogPo
 router.get("/pics", isAuthProtected, channelsController.getAllPics);
 router.get("/pics/:id", isAuthProtected, channelsController.getPicsById);
 router.post("/pics/upload", uploadSingleImage, isAuthProtected, channelsController.uploadPics);
-router.get("/pics/my-posts", isAuthProtected, channelsController.getAllMyPics);
+router.get("/pics/my-images", isAuthProtected, channelsController.getAllMyPics);
 
  
 module.exports = router; 

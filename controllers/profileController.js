@@ -1,5 +1,6 @@
 const Notification = require("../models/notificationModel");
 const Profile = require("../models/profileModel");
+const User = require("../models/usersModel");
 const { asyncWrapper } = require("../utils/handlers");
 const { filterObj, formatDate, countNum } = require("../utils/helpers");
 const refactory = require("./handleRefactory");
@@ -11,6 +12,7 @@ const refactory = require("./handleRefactory");
 //////////////////////////////////////////////////
 exports.becomeCreator = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
+    const user = await User.findById(id)
     const already_a_Creator = await Profile.findOne({ user: userId })
 
     if(already_a_Creator.isCreator) return res.json({

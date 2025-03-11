@@ -107,7 +107,7 @@ exports.verifyOtp = asyncWrapper(async function(req, res) {
     await user.save({ validateBeforeSave: false });
 
     // CREATE A PROFILE
-    await Profile.create({ user: user._id, username: user.username });
+    await Profile.create({ user: user._id, username: user.username, profileName: user.fullname });
 
     // SEND BACK RESPONSE
     res.status(200).json({

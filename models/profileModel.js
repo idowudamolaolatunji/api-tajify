@@ -9,8 +9,14 @@ const ProfileSchema = new mongoose.Schema({
     },
     profileName: String,
     username: String,
-    profileImage: { url: String, public_id: String },
-    coverPhoto: { url: String, public_id: String },
+    profileImage: {
+        url: { type: String, default: "" },
+        public_id: String
+    },
+    coverPhoto: {
+        url: { type: String, default: "" },
+        public_id: String
+    },
     bio: { type: mongoose.Schema.Types.Mixed },
     website: String,
     country: String,

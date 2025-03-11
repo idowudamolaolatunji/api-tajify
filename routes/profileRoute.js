@@ -7,9 +7,9 @@ const profileController = require("../controllers/profileController");
 const router = express.Router();
 
 
-router.get("/", isAuthProtected, isRestricted, profileController.getAllProfiles)
-router.get("/:id", isAuthProtected, isRestricted, profileController.getProfileById)
+router.get("/", isAuthProtected, profileController.getAllProfiles)
 router.get("/my-profile", isAuthProtected, profileController.getMyProfile)
+router.get("/:id", isAuthProtected, profileController.getProfileById)
 router.post("/become-a-creator", isAuthProtected, isRestricted(["user"]), profileController.becomeCreator);
 
 ////////////////////////////////////////////////////

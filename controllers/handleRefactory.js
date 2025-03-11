@@ -98,7 +98,7 @@ exports.getOne = function(Model, title) {
     return asyncWrapper(async function(req, res) {
         const { id } = req.params;
 
-        const document = await Model.findOne({ id });
+        const document = await Model.findOne({ _id: id });
         if(!document) return res.json({
             message: `No ${title} by that ID!`
         });

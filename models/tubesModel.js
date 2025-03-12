@@ -19,7 +19,7 @@ const tubesSchema = new mongoose.Schema({
     comments: { type: Number, default: 0 },
     type: {
         type: String,
-        enum: ["tube-short", "tube-max", "tube-prime"],
+        enum: ["tube-short", "tube-max"],
         required: true,
     },
     hashTags: [String],
@@ -65,7 +65,7 @@ tubesSchema.pre("save", function(next) {
 tubesSchema.pre(/^find/, function(next) {
     this.populate({
         path: "creatorProfile",
-        select: "_id profileName username profileImage",
+        select: "_id user profileName profileImage username",
     });
 
     next();

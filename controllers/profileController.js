@@ -12,10 +12,10 @@ const refactory = require("./handleRefactory");
 //////////////////////////////////////////////////
 exports.becomeCreator = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const user = await User.findById(id)
-    const already_a_Creator = await Profile.findOne({ user: userId })
+    const user = await User.findOne({ _id: userId })
+    const already_a_Creator = await Profile.findOne({ user: userId, isCreator: true })
 
-    if(already_a_Creator.isCreator) return res.json({
+    if(already_a_Creator) return res.json({
         message: "Cannot process request, You are already a creator!"
     })
 
@@ -32,8 +32,8 @@ exports.becomeCreator = asyncWrapper(async function(req, res) {
     })
 });
 
-exports.getAllProfiles = refactory.getAll(Profile, "Profile")
-exports.getProfileById = refactory.getOne(Profile, "Profile")
+exports.getAllProfiles = refactory.getAll(Profile, "profile")
+exports.getProfileById = refactory.getOne(Profile, "profile")
 
 exports.getMyProfile = asyncWrapper(async function(req, res) {
     const creatorId = req.user._id;

@@ -65,7 +65,43 @@ exports.getTubes = asyncWrapper(async function(req, res) {
         },
         { $sort: { weight: -1 } },
         { $skip: paginationOptions.skip },
-        { $limit: paginationOptions.limit }
+        { $limit: paginationOptions.limit },
+        {
+            $lookup: {
+              from: 'profiles',
+              localField: 'creatorProfile',
+              foreignField: '_id',
+              as: 'creatorProfile'
+            }
+          },
+          {
+            $unwind: '$creatorProfile'
+          },
+          {
+            $project: {
+                title: 1,
+                description: 1,
+                views: 1,
+                likes: 1,
+                comments: 1,
+                type: 1,
+                hashTags: 1,
+                video: 1,
+                thumbnail: 1,
+                slug: 1,
+                lastModified: 1,
+                createdAt: 1,
+                updatedAt: 1,
+              creatorProfile: {
+                _id: 1,
+                user: 1,
+                profileName: 1,
+                profileImage: 1,
+                username: 1
+              }
+            }
+          }
+        
     ]);
 
 

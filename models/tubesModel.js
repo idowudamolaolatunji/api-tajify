@@ -65,10 +65,10 @@ tubesSchema.pre("save", function(next) {
 tubesSchema.pre(/^find/, function(next) {
     this.populate({
         path: "creatorProfile",
-        select: "_id user profileName profileImage username",
+        select: "_id, user profileName profileImage username",
     });
 
-    next();
+    // next();
 })
 
 

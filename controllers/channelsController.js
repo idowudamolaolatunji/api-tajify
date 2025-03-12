@@ -115,7 +115,8 @@ exports.getTubes = asyncWrapper(async function(req, res) {
     const tubeData = await Promise.all(tubes.map(async (tube) => {
         const creatorProfile = await Profile.findById(tube.creatorProfile);
         const isFollowingCreator = creatorProfile.followers.includes(myProfile._id);
-        return { ...tube, isFollowingCreator };
+        const isFollowedByCreator = creatorProfile.following.includes(myProfile._id);
+        return { ...tube, isFollowingCreator, ...(myProfile.isCreator && { isFollowedByCreator }) };
     }));
     
 

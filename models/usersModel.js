@@ -44,12 +44,12 @@ const userSchema = new mongoose.Schema({
         default: "user"
     },
     referralCode: String,
+    avatar: String,
     isActive: {
         type: Boolean,
         default: true
     },
     slug: String,
-    lastSeen: String,
 
     // OPT & EMAIL VERIFICATIONS
     otpCode: { type: Number, select: false },
@@ -121,7 +121,6 @@ userSchema.methods.isOTPExpired = function () {
 
         const remainingSec = Number((ExpiresTime - currentTime) / 1000).toFixed(0) || 0;
         const isOTPExpired = currentTime > ExpiresTime;
-        console.log(isOTPExpired, remainingSec)
 		return { isOTPExpired, remainingSec };
 	}
 	return false;

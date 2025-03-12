@@ -125,9 +125,15 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
           $limit: paginationOptions.limit
         }
     ]);
+
+    const creatorsData = await Promise.all(creators.map(async (creator) => {
+        const creatorProfile = await Profile.findById(creator._id)
+        const isFollowingCreator = creatorProfile.followers.includes(myProfile._id);
+        const isFollowedByCreator = creatorProfile.following.includes(myProfile._id);
+        return { ...creatorProfile, isFollowingCreator, ...(myProfile.isCreator && { isFollowedByCreator }) };
+    }));
       
-
-
+      
     const totalLength = creators.length;
     const totalPage = totalLength > limit ? totalLength / limit : 1;
     const remainingLength = totalLength - (paginationOptions.skip + creators.length);
@@ -149,7 +155,7 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
 
     res.status(200).json({
         ...responseData,
-        data: { creators },
+        data: { creators: creatorsData },
     })
 });
 

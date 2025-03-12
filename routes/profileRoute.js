@@ -12,6 +12,9 @@ router.get("/my-profile", isAuthProtected, profileController.getMyProfile)
 router.get("/:id", isAuthProtected, profileController.getProfileById)
 router.post("/become-a-creator", isAuthProtected, isRestricted(["user"]), profileController.becomeCreator);
 
+router.get("/creators/profiles", isAuthProtected, profileController.fetchCreators)
+
+
 ////////////////////////////////////////////////////
 
 router.patch("/follow-creator", isAuthProtected, profileController.followCreator);

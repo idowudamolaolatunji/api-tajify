@@ -73,6 +73,90 @@ exports.updateProfile = asyncWrapper(async function(req, res) {
 });
 
 
+exports.fetchCreators = asyncWrapper(async function(req, res) {
+    const { limit, page } = req.query
+
+    const userId = req.user._id;
+    const myProfile = await Profile.findOne({ user: userId });
+    console.log(myProfile)
+
+
+    const paginationOptions = {};
+    if (limit) paginationOptions.limit = parseInt(limit);
+    if (page) paginationOptions.skip = (parseInt(page) - 1) * paginationOptions.limit;
+
+    console.log(limit, page, paginationOptions)
+
+    // const creators = await Profile.find({
+    //     _id: { $ne: myProfile._id },
+    //     isCreator: true,
+    //     followers: { $ne: myProfile._id },
+    //     following: { $ne: myProfile._id },
+    // })
+    // .sort({
+    //     $size: { followers: -1 }, // sort by followers in descending order
+    //     $size: { following: 1 } // sort by followings in ascending order
+    // })
+    // .skip(paginationOptions.skip)
+    // .limit(paginationOptions.limit);
+
+    const creators = await Profile.aggregate([
+        {
+          $match: {
+            _id: { $ne: myProfile._id },
+            isCreator: true,
+            followers: { $ne: myProfile._id },
+            following: { $ne: myProfile._id }
+          }
+        },
+        {
+          $addFields: {
+            followersCount: { $size: "$followers" },
+            followingCount: { $size: "$following" }
+          }
+        },
+        {
+          $sort: {
+            followersCount: -1,
+            followingCount: 1
+          }
+        },
+        {
+          $skip: paginationOptions.skip
+        },
+        {
+          $limit: paginationOptions.limit
+        }
+    ]);
+      
+
+
+    const totalLength = creators.length;
+    const totalPage = totalLength > limit ? totalLength / limit : 1;
+    const remainingLength = totalLength - (paginationOptions.skip + creators.length);
+
+    const responseData = {
+        status: "success",
+        totalPage, limit: +limit,
+        currentPage: +page,
+        totalCounts: totalLength,
+        remainingCounts: paginationOptions.skip > totalPage ? 0 : remainingLength,
+    }
+
+    if(remainingLength < 0) {
+        return res.json({
+            ...responseData,
+            message: `No more creator found`,
+        })
+    }
+
+    res.status(200).json({
+        ...responseData,
+        data: { creators },
+    })
+});
+
+
 //////////////////////////////////////////////////
 // FOLLOW IMPLEMENTATIONS
 //////////////////////////////////////////////////

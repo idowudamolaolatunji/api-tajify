@@ -28,6 +28,7 @@ exports.deleteOneTubeById = refactory.updateOne(Tube, "tube");
 exports.getTubes = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const myProfile = await Profile.findOne({ user: userId });
+    console.log(myProfile)
 
     const { type, limit, page } = req.query;
 
@@ -45,7 +46,7 @@ exports.getTubes = asyncWrapper(async function(req, res) {
         shares: 0.2,
         saves: 0.1,
     };
-  
+
     const tubes = await Tube.aggregate([
         { $match: query },
         {
@@ -83,9 +84,7 @@ exports.getTubes = asyncWrapper(async function(req, res) {
               as: 'creatorProfile'
             }
         },
-        {
-            $unwind: '$creatorProfile'
-        },
+        { $unwind: '$creatorProfile' },
         {
             $project: {
                 title: 1,
@@ -108,22 +107,21 @@ exports.getTubes = asyncWrapper(async function(req, res) {
                     profileImage: 1,
                     username: 1
                 },
-                isFollowingCreator: {
-                    $in: [myProfile._id, "$creatorProfile.followers"]
-                }
-                
             }
-        }
-        
+        },
     ]);
 
+    const tubeData = await Promise.all(tubes.map(async (tube) => {
+        const creatorProfile = await Profile.findById(tube.creatorProfile);
+        const isFollowingCreator = creatorProfile.followers.includes(myProfile._id);
+        return { ...tube, isFollowingCreator };
+    }));
+    
 
     res.status(200).json({
         status: "success",
-        data: {
-            tubes
-        }
-    })
+        data: { tubes: tubeData }
+    });
 });
 
 exports.uploadTube = asyncWrapper(async function(req, res) {

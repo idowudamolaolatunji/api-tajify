@@ -78,14 +78,11 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
 
     const userId = req.user._id;
     const myProfile = await Profile.findOne({ user: userId });
-    console.log(myProfile)
-
 
     const paginationOptions = {};
     if (limit) paginationOptions.limit = parseInt(limit);
     if (page) paginationOptions.skip = (parseInt(page) - 1) * paginationOptions.limit;
 
-    console.log(limit, page, paginationOptions)
 
     // const creators = await Profile.find({
     //     _id: { $ne: myProfile._id },

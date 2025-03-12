@@ -11,8 +11,8 @@ const router = express.Router();
 //////////////////////////////////////////////////
 // TUBES
 //////////////////////////////////////////////////
-router.get("/tubes", channelsController.getTubes);
-router.get("/tubes/:id", channelsController.getOneTubeById);
+router.get("/tubes", isAuthProtected, channelsController.getTubes);
+router.get("/tubes/:id", isAuthProtected, channelsController.getOneTubeById);
 
 router.get("/tubes/my-tubes", isAuthProtected, channelsController.getAllMyTubes);
 router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);

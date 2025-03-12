@@ -26,6 +26,9 @@ exports.updateOneTubeById = refactory.updateOne(Tube, "tube");
 exports.deleteOneTubeById = refactory.updateOne(Tube, "tube");
 
 exports.getTubes = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const myProfile = await Profile.findOne({ user: userId });
+
     const { type, limit, page } = req.query;
 
     const query = {};
@@ -45,6 +48,12 @@ exports.getTubes = asyncWrapper(async function(req, res) {
   
     const tubes = await Tube.aggregate([
         { $match: query },
+        {
+            $match: {
+                creatorProfile: { $ne: myProfile._id }
+            }
+              
+        },
         {
             $addFields: {
                 weight: {
@@ -73,11 +82,11 @@ exports.getTubes = asyncWrapper(async function(req, res) {
               foreignField: '_id',
               as: 'creatorProfile'
             }
-          },
-          {
+        },
+        {
             $unwind: '$creatorProfile'
-          },
-          {
+        },
+        {
             $project: {
                 title: 1,
                 description: 1,
@@ -92,15 +101,19 @@ exports.getTubes = asyncWrapper(async function(req, res) {
                 lastModified: 1,
                 createdAt: 1,
                 updatedAt: 1,
-              creatorProfile: {
-                _id: 1,
-                user: 1,
-                profileName: 1,
-                profileImage: 1,
-                username: 1
-              }
+                creatorProfile: {
+                    _id: 1,
+                    user: 1,
+                    profileName: 1,
+                    profileImage: 1,
+                    username: 1
+                },
+                isFollowingCreator: {
+                    $in: [myProfile._id, "$creatorProfile.followers"]
+                }
+                
             }
-          }
+        }
         
     ]);
 

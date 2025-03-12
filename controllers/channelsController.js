@@ -105,7 +105,8 @@ exports.getTubes = asyncWrapper(async function(req, res) {
                     user: 1,
                     profileName: 1,
                     profileImage: 1,
-                    username: 1
+                    username: 1,
+                    followers: 1,
                 },
             }
         },

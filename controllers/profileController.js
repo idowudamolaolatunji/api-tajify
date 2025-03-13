@@ -33,7 +33,26 @@ exports.becomeCreator = asyncWrapper(async function(req, res) {
 });
 
 exports.getAllProfiles = refactory.getAll(Profile, "profile")
-exports.getProfileById = refactory.getOne(Profile, "profile")
+exports.getProfileById = asyncWrapper(async function(req, res) {
+    const userId = req.user._id;
+    const creatorProfileId = req.params.id
+    const myProfile = await Profile.findOne({ user: userId });
+
+    const creatorProfile = await Profile.findOne({ _id: creatorProfileId, isCreator: true });
+    const isFollowingCreator = creatorProfile.followers.includes(myProfile._id);
+    const isFollowedByCreator = creatorProfile.following.includes(myProfile._id);
+
+    const profileData = {
+        ...creatorProfile?._doc,
+        isFollowingCreator,
+        ...(myProfile.isCreator && { isFollowedByCreator })
+    };
+
+    res.status(201).json({
+        status: "success",
+        data: { profile: profileData }
+    })
+})
 
 exports.getMyProfile = asyncWrapper(async function(req, res) {
     const creatorId = req.user._id;

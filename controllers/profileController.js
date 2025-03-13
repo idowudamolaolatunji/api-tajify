@@ -33,6 +33,7 @@ exports.becomeCreator = asyncWrapper(async function(req, res) {
 });
 
 exports.getAllProfiles = refactory.getAll(Profile, "profile")
+
 exports.getProfileById = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const creatorProfileId = req.params.id
@@ -48,7 +49,7 @@ exports.getProfileById = asyncWrapper(async function(req, res) {
         ...(myProfile.isCreator && { isFollowedByCreator })
     };
 
-    res.status(201).json({
+    res.status(200).json({
         status: "success",
         data: { profile: profileData }
     })

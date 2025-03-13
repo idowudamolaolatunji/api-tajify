@@ -168,7 +168,7 @@ exports.followCreator = asyncWrapper(async function(req, res) {
     const creatorProfileId = req.params.id;
 
     const currentProfile = await Profile.findOne({ user: currentUserId });
-    const profileToFollow = await Profile.findOne({ _id: profileId, isCreator: true });
+    const profileToFollow = await Profile.findOne({ _id: creatorProfileId, isCreator: true });
     if(!profileToFollow) return res.json({ message: "Only creators can be followed" });
 
     if (currentProfile.following.includes(profileToFollow._id)) {
@@ -196,10 +196,10 @@ exports.followCreator = asyncWrapper(async function(req, res) {
 
 exports.followBackCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
-    const profileId = req.params.id;
+    const creatorProfileId = req.params.id;
 
     const currentProfile = await Profile.findOne({ user: currentUserId });
-    const profileToFollowBack = await Profile.findOne({ user: profileId, isCreator: true });
+    const profileToFollowBack = await Profile.findOne({ _id: creatorProfileId, isCreator: true });
     if(!profileToFollowBack) return res.json({ message: "Only creators can be followed back" });
 
     if(currentProfile.following.includes(profileToFollowBack._id)) {
@@ -235,10 +235,14 @@ exports.unfollowCreator = asyncWrapper(async function(req, res) {
         return res.json({ message: "Only unfollow creator you already follow" });
     }
 
-    profileToUnfollow.followers.filter((id) => id !== currentProfile._id);
+    profileToUnfollow.followers = profileToUnfollow.followers.filter((id) => {
+        return id.toString() !== currentProfile._id.toString()
+    });
     await profileToUnfollow.save({ validateBeforeSave: false });
-
-    currentProfile.following.filter((id) => id !== profileToUnfollow._id);
+    
+    currentProfile.following = currentProfile.following.filter((id) => {
+        return id.toString() !== profileToUnfollow._id.toString()
+    });
     await currentProfile.save({ validateBeforeSave: false });
 
     res.status(200).json({

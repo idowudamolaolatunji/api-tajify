@@ -130,7 +130,7 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
         const creatorProfile = await Profile.findById(creator._id)
         const isFollowingCreator = creatorProfile.followers.includes(myProfile._id);
         const isFollowedByCreator = creatorProfile.following.includes(myProfile._id);
-        return { ...creatorProfile, isFollowingCreator, ...(myProfile.isCreator && { isFollowedByCreator }) };
+        return { ...creatorProfile?._doc, isFollowingCreator, ...(myProfile.isCreator && { isFollowedByCreator }) };
     }));
       
       

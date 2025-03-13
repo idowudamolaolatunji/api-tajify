@@ -103,7 +103,6 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
     if (limit) paginationOptions.limit = parseInt(limit);
     if (page) paginationOptions.skip = (parseInt(page) - 1) * paginationOptions.limit;
 
-
     // const creators = await Profile.find({
     //     _id: { $ne: myProfile._id },
     //     isCreator: true,
@@ -152,7 +151,6 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
         const isFollowedByCreator = creatorProfile.following.includes(myProfile._id);
         return { ...creatorProfile?._doc, isFollowingCreator, ...(myProfile.isCreator && { isFollowedByCreator }) };
     }));
-      
       
     const totalLength = creators.length;
     const totalPage = totalLength > limit ? totalLength / limit : 1;

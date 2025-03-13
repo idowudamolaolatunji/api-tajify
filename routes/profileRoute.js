@@ -8,8 +8,8 @@ const router = express.Router();
 
 
 router.get("/", isAuthProtected, profileController.getAllProfiles)
-router.get("/my-profile", isAuthProtected, profileController.getMyProfile)
 router.get("/:id", isAuthProtected, profileController.getProfileById)
+router.get("/my/profile", isAuthProtected, profileController.getMyProfile)
 router.post("/become-a-creator", isAuthProtected, isRestricted(["user"]), profileController.becomeCreator);
 
 router.get("/creators/profiles", isAuthProtected, profileController.fetchCreators)

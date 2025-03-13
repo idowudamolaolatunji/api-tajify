@@ -165,7 +165,7 @@ exports.fetchCreators = asyncWrapper(async function(req, res) {
 //////////////////////////////////////////////////
 exports.followCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
-    const profileId = req.params.id;
+    const creatorProfileId = req.params.id;
 
     const currentProfile = await Profile.findOne({ user: currentUserId });
     const profileToFollow = await Profile.findOne({ _id: profileId, isCreator: true });
@@ -190,7 +190,7 @@ exports.followCreator = asyncWrapper(async function(req, res) {
 
     res.status(200).json({
         status: 'success',
-        message: "Follow request sent!",
+        message: "Followed!",
     });
 });
 
@@ -220,18 +220,18 @@ exports.followBackCreator = asyncWrapper(async function(req, res) {
 
     res.status(200).json({
         status: 'success',
-        message: "Follow request sent!",
+        message: "Followed back!",
     });
 });
 
 exports.unfollowCreator = asyncWrapper(async function(req, res) {
     const currentUserId = req.user._id;
-    const profileId = req.params.id;
+    const creatorProfileId = req.params.id;
 
     const currentProfile = await Profile.findOne({ user: currentUserId });
-    const profileToUnfollow = await Profile.findOne({ user: profileId, isCreator: true });
+    const profileToUnfollow = await Profile.findOne({ _id: creatorProfileId, isCreator: true });
 
-    if(!profileToUnfollow || !currentProfile.following.includes(profileToUnfollow.id)) {
+    if(!profileToUnfollow || !profileToUnfollow.followers.includes(currentProfile._id)) {
         return res.json({ message: "Only unfollow creator you already follow" });
     }
 
@@ -243,7 +243,7 @@ exports.unfollowCreator = asyncWrapper(async function(req, res) {
 
     res.status(200).json({
         status: 'success',
-        message: "Follow request sent!",
+        message: "Unfollowed!",
     });
 })
 

@@ -17,9 +17,9 @@ router.get("/creators/profiles", isAuthProtected, profileController.fetchCreator
 
 ////////////////////////////////////////////////////
 
-router.patch("/follow-creator", isAuthProtected, profileController.followCreator);
-router.patch("/unfollow-cretor", isAuthProtected, profileController.unfollowCreator);
-router.patch("/follow-creator/back", isAuthProtected, profileController.followBackCreator);
+router.patch("/follow-creator/:id", isAuthProtected, profileController.followCreator);
+router.patch("/unfollow-creator/:id", isAuthProtected, profileController.unfollowCreator);
+router.patch("/follow-creator/back/:id", isAuthProtected, profileController.followBackCreator);
 
 ////////////////////////////////////////////////////
 router.get("/followers", isAuthProtected, profileController.getMyFollowers);

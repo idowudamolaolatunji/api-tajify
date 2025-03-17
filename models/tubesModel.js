@@ -68,8 +68,8 @@ tubesSchema.pre(/^find/, function(next) {
         select: "_id, user profileName profileImage username",
     });
 
-    // next();
-})
+    next();
+});
 
 
 const Tube = mongoose.model("Tube", tubesSchema);

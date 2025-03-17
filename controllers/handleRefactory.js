@@ -69,6 +69,31 @@ exports.getAll = function(Model, title) {
 }
 
 
+exports.getAllByCreatorId = function(Model, title) {
+    return asyncWrapper(async function(req, res) {
+        const { id, type } = req.params;
+        const docTitle = `${title}s`
+        
+        let documents;
+        if(type) {
+            documents = await Model.find({ creatorProfile: id, type }).sort({ createAt: -1 });
+        } else {
+            documents = await Model.find({ creatorProfile: id }).sort({ createAt: -1 });
+        }
+
+        if(documents.length < 1) {
+            return res.json({ message: `No ${title} found!` });
+        }
+
+        res.status(200).json({
+            status: "success",
+            data: { [docTitle]: documents },
+            count: documents?.length,
+        });
+    })
+}
+
+
 exports.getAllMine = function(Model, title, queryField) {
     return asyncWrapper(async function(req, res) {
         const userId = req.user._id;

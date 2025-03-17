@@ -203,6 +203,8 @@ exports.uploadTube = asyncWrapper(async function(req, res) {
     });
 });
 
+exports.getAllTubesForCreator = refactory.getAllByCreatorId(Tube, "tube");
+
 
 //////////////////////////////////////////////////
 // AUDIO AND MUSIC
@@ -275,6 +277,10 @@ exports.getAllMyMusic = refactory.getAllMine(Audio, "music", "creatorProfile");
 exports.getOneMusicById = refactory.getOne(Audio, "music");
 exports.updateOneMusicById = refactory.updateOne(Audio, "music");
 exports.deleteOneMusicById = refactory.updateOne(Audio, "music");
+exports.getAllMusicForCreator = refactory.getAllByCreatorId(Audio, "music");
+
+
+
 
 //////////////////////////////////////////////////
 // PODCASTS
@@ -373,6 +379,7 @@ exports.getOnePodcastById = refactory.getOne(Podcast, "podcast");
 exports.updateOnePodcastById = refactory.updateOne(Podcast, "podcast");
 exports.deleteOnePodcastById = refactory.deleteOne(Podcast, "podcast");
 exports.getAllMyPodcasts = refactory.getAllMine(Podcast, "podcast", "creatorProfile");
+exports.getAllPodcastForCreator = refactory.getAllByCreatorId(Podcast, "podcast");
 
 
 
@@ -384,6 +391,7 @@ exports.getAllBooks = refactory.getAll(Book, "book",);
 exports.getBookById = refactory.getOne(Book, "book")
 
 exports.getAllMyBooks = refactory.getAllMine(Book, "book", "creatorProfile");
+exports.getAllBooksForCreator = refactory.getAllByCreatorId(Book, "book");
 
 // Create book
 exports.createBook = asyncWrapper(async (req, res) => {
@@ -552,6 +560,7 @@ exports.createBlogPost = asyncWrapper(async function(req, res) {
 exports.getAllBlogPosts = refactory.getAll(Blog, "blog",);
 exports.getBlogPostById = refactory.getOne(Blog, "blog")
 exports.getAllMyBlogPosts = refactory.getAllMine(Blog, "blog", "creatorProfile");
+exports.getAllBlogsForCreator = refactory.getAllByCreatorId(Blog, "blog");
 
 
 
@@ -608,7 +617,7 @@ exports.uploadPics = asyncWrapper(async function(req, res) {
 exports.getAllPics = refactory.getAll(Pic, "pics",);
 exports.getPicsById = refactory.getOne(Pic, "pics")
 exports.getAllMyPics = refactory.getAllMine(Pic, "pics", "creatorProfile");
-
+exports.getAllPicsForCreator = refactory.getAllByCreatorId(Pic, "pics");
 
 
 

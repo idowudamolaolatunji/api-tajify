@@ -17,6 +17,7 @@ router.get("/tubes/:id", isAuthProtected, channelsController.getOneTubeById);
 router.get("/tubes/my-tubes", isAuthProtected, channelsController.getAllMyTubes);
 router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);
 router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsController.uploadTube);
+router.get("/tubes/creator/:id/:type", channelsController.getAllTubesForCreator);
 
 router.patch("/tubes/:id", isAuthProtected, channelsController.updateOneTubeById);
 router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeById);
@@ -32,6 +33,8 @@ router.post("/music/upload", uploadSingleAudio, isAuthProtected, channelsControl
 
 router.patch("/music/:id", isAuthProtected, channelsController.updateOneMusicById);
 router.delete("/music/:id", isAuthProtected, channelsController.deleteOneMusicById);
+router.get("/music/creator/:id", channelsController.getAllMusicForCreator);
+
 
 
 //////////////////////////////////////////////////
@@ -46,6 +49,7 @@ router.post("/podcasts/episode/:id", uploadSingleAudio, isAuthProtected, channel
 
 router.patch("/podcasts/:id", isAuthProtected, channelsController.updateOnePodcastById);
 router.delete("/podcasts/:id", isAuthProtected, channelsController.deleteOnePodcastById);
+router.get("/podcasts/creator/:id", channelsController.getAllPodcastForCreator);
 
 
 ////////////////////////////////////////////////// 
@@ -58,6 +62,7 @@ router.get("/books/my-books", isAuthProtected, channelsController.getAllMyBooks)
 
 router.patch("/books/:id", isAuthProtected, channelsController.updateBook);
 router.delete("/books/:id", isAuthProtected, channelsController.deleteBook);
+router.get("/books/creator/:id", channelsController.getAllBooksForCreator);
 
 
 ////////////////////////////////////////////////// 
@@ -67,6 +72,7 @@ router.get("/blogs", isAuthProtected, channelsController.getAllBlogPosts);
 router.get("/blogs/:id", isAuthProtected, channelsController.getBlogPostById);
 router.post("/blogs/post", isAuthProtected, channelsController.createBlogPost);
 router.get("/blogs/my-blogs", isAuthProtected, channelsController.getAllMyBlogPosts);
+router.get("/blogs/creator/:id", channelsController.getAllBlogsForCreator);
 
 
 ////////////////////////////////////////////////// 
@@ -76,6 +82,7 @@ router.get("/pics", isAuthProtected, channelsController.getAllPics);
 router.get("/pics/:id", isAuthProtected, channelsController.getPicsById);
 router.post("/pics/upload", uploadSingleImage, isAuthProtected, channelsController.uploadPics);
 router.get("/pics/my-images", isAuthProtected, channelsController.getAllMyPics);
+router.get("/pics/creator/:id", channelsController.getAllPicsForCreator);
 
  
 module.exports = router; 

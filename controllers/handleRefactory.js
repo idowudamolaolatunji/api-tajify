@@ -72,7 +72,7 @@ exports.getAll = function(Model, title) {
 exports.getAllByCreatorId = function(Model, title) {
     return asyncWrapper(async function(req, res) {
         const { id, type } = req.params;
-        const docTitle = `${title}s`
+        const docTitle = `${title}s`;
         
         let documents;
         if(type) {

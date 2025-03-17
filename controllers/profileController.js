@@ -61,7 +61,7 @@ exports.getMyProfile = asyncWrapper(async function(req, res) {
     const profile = await Profile.findOne({ user: creatorId });
     if(!profile.isCreator) return res.json({ message: "You are not yet a creator!" });
 
-    res.status(201).json({
+    res.status(200).json({
         status: "success",
         data: { profile }
     })

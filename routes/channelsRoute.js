@@ -28,7 +28,7 @@ router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeByI
 //////////////////////////////////////////////////
 router.get("/music", isAuthProtected, isRestricted, channelsController.getAllMusic);
 router.get("/music/:id", channelsController.getOneMusicById);
-router.get("/music/my-musics", isAuthProtected, channelsController.getAllMyMusic);
+router.get("/music/my-music", isAuthProtected, channelsController.getAllMyMusic);
 router.post("/music/upload", uploadSingleAudio, isAuthProtected, channelsController.uploadMusicAudio);
 
 router.patch("/music/:id", isAuthProtected, channelsController.updateOneMusicById);

@@ -37,11 +37,13 @@ const upload = multer({
 //// MULTER UPLOADS ////
 //////////////////////////////////////////////////
 exports.uploadSingleImage = upload.single('image');
+exports.uploadSingleEpisode = upload.single("episode");
 
 exports.uploadSingleTube = upload.fields([
     { name: 'tube', maxCount: 1 },
     { name: 'thumbnail', maxCount: 1 }
 ]);
+
 exports.uploadSingleAudio = upload.fields([
     { name: 'audio', maxCount: 1 },
     { name: 'coverImage', maxCount: 1 }

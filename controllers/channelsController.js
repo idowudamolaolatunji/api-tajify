@@ -209,6 +209,7 @@ exports.getAllTubesForCreator = refactory.getAllByCreatorId(Tube, "tube");
 //////////////////////////////////////////////////
 exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
+    console.log(req.files)
     const audioFile = req.files.audio[0];
     const coverImageFile = req.files.coverImage[0];
     const { title, description } = req.body;
@@ -333,7 +334,8 @@ exports.createPodcast = asyncWrapper(async function(req, res) {
 
 exports.uploadEpisode = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const audioFile = req.files.audio[0];
+    console.log(req.files, req.file);
+    const audioFile = req.file;
     const { id } = req.params;
     const { title, description } = req.body;
 
@@ -357,7 +359,7 @@ exports.uploadEpisode = asyncWrapper(async function(req, res) {
 
     const { public_id, url, duration_in_sec } = await audioFileUpload;
     const audioData = { url, public_id, duration_in_sec }
-    const episode = { title, description, audio: audioData,}
+    const episode = { title, description, audio: audioData, addedDate: Date.now()}
 
     await Podcast.findOne(
         { _id: creator_podcast._id },

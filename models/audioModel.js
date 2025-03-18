@@ -47,7 +47,7 @@ audioSchema.pre("save", function(next) {
 audioSchema.pre(/^find/, function(next) {
     this.populate({
         path: "creatorProfile",
-        select: "_id username",
+        select: "_id profileName",
     });
 
     next();

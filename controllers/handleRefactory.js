@@ -54,10 +54,8 @@ exports.getAllPaginated = function(Model, title) {
 exports.getAll = function(Model, title) {
     return asyncWrapper(async function(_, res) {
         const docTitle = `${title}s`
-        console.log("hi 1")
         
         const documents = await Model.find({}).sort({ createAt: -1 });
-        console.log("hi 2")
         if(!documents || documents.length < 1) {
             res.json({ message: `No ${title} found!` });
         }

@@ -334,10 +334,10 @@ exports.createPodcast = asyncWrapper(async function(req, res) {
 
 exports.uploadEpisode = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    console.log(req.files, req.file);
-    const audioFile = req.file;
     const { id } = req.params;
     const { title, description } = req.body;
+    console.log(req.files, req.file);
+    const audioFile = req.file;
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     const creator_podcast = await Podcast.findOne({ _id: id, creatorProfile: creator._id });

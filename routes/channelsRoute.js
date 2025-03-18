@@ -15,7 +15,7 @@ router.get("/tubes", isAuthProtected, channelsController.getTubes);
 router.get("/tubes/:id", isAuthProtected, channelsController.getOneTubeById);
 
 router.get("/tubes/my-tubes", isAuthProtected, channelsController.getAllMyTubes);
-router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);
+// router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);
 router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsController.uploadTube);
 router.get("/tubes/creator/:id/:type", channelsController.getAllTubesForCreator);
 
@@ -26,7 +26,8 @@ router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeByI
 //////////////////////////////////////////////////
 // MUSIC
 //////////////////////////////////////////////////
-router.get("/music", isAuthProtected, isRestricted, channelsController.getAllMusic);
+// router.get("/music", isAuthProtected, isRestricted, channelsController.getAllMusic);
+router.get("/music", isAuthProtected, channelsController.getAllMusic);
 router.get("/music/:id", channelsController.getOneMusicById);
 router.get("/music/my-music", isAuthProtected, channelsController.getAllMyMusic);
 router.post("/music/upload", uploadSingleAudio, isAuthProtected, channelsController.uploadMusicAudio);
@@ -40,7 +41,8 @@ router.get("/music/creator/:id", channelsController.getAllMusicForCreator);
 //////////////////////////////////////////////////
 // PODCASTS
 //////////////////////////////////////////////////
-router.get("/podcasts", isAuthProtected, isRestricted, channelsController.getAllPodcasts);
+// router.get("/podcasts", isAuthProtected, isRestricted, channelsController.getAllPodcasts);
+router.get("/podcasts", isAuthProtected, channelsController.getAllPodcasts);
 router.get("/podcasts/:id", channelsController.getOnePodcastById);
 router.get("/podcasts/my-podcasts", isAuthProtected, channelsController.getAllMyPodcasts);
 

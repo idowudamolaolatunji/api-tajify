@@ -27,10 +27,8 @@ exports.deleteOneTubeById = refactory.updateOne(Tube, "tube");
 
 exports.getTubes = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
-    const myProfile = await Profile.findOne({ user: userId });
-    console.log(myProfile)
-
     const { type, limit, page } = req.query;
+    const myProfile = await Profile.findOne({ user: userId });
 
     const query = {};
     if (type) query.type = type;

@@ -614,10 +614,10 @@ exports.uploadPics = asyncWrapper(async function(req, res) {
     });
 });
 
-exports.getAllPics = refactory.getAll(Pic, "pics",);
-exports.getPicsById = refactory.getOne(Pic, "pics")
-exports.getAllMyPics = refactory.getAllMine(Pic, "pics", "creatorProfile");
-exports.getAllPicsForCreator = refactory.getAllByCreatorId(Pic, "pics");
+exports.getAllPics = refactory.getAll(Pic, "pic",);
+exports.getPicsById = refactory.getOne(Pic, "pic")
+exports.getAllMyPics = refactory.getAllMine(Pic, "pic", "creatorProfile");
+exports.getAllPicsForCreator = refactory.getAllByCreatorId(Pic, "pic");
 
 
 

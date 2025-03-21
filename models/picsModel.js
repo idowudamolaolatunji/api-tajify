@@ -12,6 +12,7 @@ const picSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
+    description: String,
     preview: {
         url: { type: String, required: true },
         public_id: String

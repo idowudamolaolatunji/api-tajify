@@ -17,7 +17,7 @@ router.get("/tubes/my-tubes", isAuthProtected, channelsController.getAllMyTubes)
 // router.get("/tubes/all-tubes", isAuthProtected, isRestricted, channelsController.getAllTubes);
 router.post("/tubes/upload", uploadSingleTube, isAuthProtected, channelsController.uploadTube);
 router.get("/tubes/:id", isAuthProtected, channelsController.getOneTubeById);
-router.get("/tubes/creator/:id/:type", channelsController.getAllTubesForCreator);
+router.get("/tubes/creator/:id", channelsController.getAllTubesForCreator);
 
 router.patch("/tubes/:id", isAuthProtected, channelsController.updateOneTubeById);
 router.delete("/tubes/:id", isAuthProtected, channelsController.deleteOneTubeById);

@@ -23,13 +23,13 @@ const tubesSchema = new mongoose.Schema({
         required: true,
     },
     hashTags: [String],
-    video: { 
+    video: {
         public_id: String,
         duration_in_sec: Number,
         url: { type: String, required: true },
     },
     thumbnail: {
-        url: { type: String, required: true },
+        url: String,
         public_id: String,
     },
     slug: String,

@@ -214,8 +214,6 @@ exports.uploadMusicAudio = asyncWrapper(async function(req, res) {
     const coverImageFile = req.files.coverImage[0];
     const { title, description } = req.body;
 
-    console.log(req.body)
-
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload audio!" });
     if(!coverImageFile) return res.json({ message: "Music cover image not uploaded correctly, WEBP file not supported!" })
@@ -575,8 +573,6 @@ exports.uploadPics = asyncWrapper(async function(req, res) {
     const userId = req.user._id;
     const imageFile = req.file;
     console.log(req.file)
-
-    console.log(req.body)
 
     const creator = await Profile.findOne({ user: userId, isCreator: true });
     if(!creator) return res.json({ message: "Only creators can upload Pictures!" });
